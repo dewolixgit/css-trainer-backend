@@ -1,14 +1,30 @@
 import { Column, ForeignKey, Model, Table } from 'sequelize-typescript';
-import { User } from '../users/users.model';
-import { Achievement } from '../achievements/achievements.model';
+import { User } from '../users';
+import { Achievement } from '../achievements';
+
+export type UserAchievementAttributes = Pick<
+  UserAchievement,
+  'id' | 'userId' | 'achievementId'
+>;
+
+export type UserAchievementCreationAttributes = Omit<
+  UserAchievementAttributes,
+  'id'
+>;
 
 @Table({ freezeTableName: true, timestamps: false })
-export class UserAchievement extends Model {
+export class UserAchievement extends Model<
+  UserAchievementAttributes,
+  UserAchievementCreationAttributes
+> {
+  @Column({ primaryKey: true, autoIncrement: true })
+  id: number;
+
   @Column
   @ForeignKey(() => User)
-  userId: number;
+  readonly userId: number;
 
   @Column
   @ForeignKey(() => Achievement)
-  achievementId: number;
+  readonly achievementId: number;
 }

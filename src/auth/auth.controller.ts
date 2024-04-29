@@ -9,8 +9,8 @@ import {
 import { ToAuthUserDto } from './dto';
 import { AuthService } from './auth.service';
 import { loginRegistrationValidationPipe } from './loginValidation.pipe';
-import { t } from '../config/translation/translation';
-import { UsersService } from '../users/users.service';
+import { t } from '../config/translation';
+import { UsersService } from '../users';
 
 @Controller('auth')
 export class AuthController {
