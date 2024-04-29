@@ -1,31 +1,56 @@
 import { BelongsToMany, Column, Model, Table } from 'sequelize-typescript';
-import { Achievement } from '../achievements/achievements.model';
-import { UserAchievement } from '../userAchievements/userAchievements.model';
+import { Achievement } from '../achievements';
+import { UserAchievement } from '../userAchievements';
+import { TaskStatus } from '../taskStatus';
+import { Task } from '../task';
+import { InputFlowOnlyCode } from '../inputFlowOnlyCode';
+import { InputFlowOnlyCodeInput } from '../inputFlowOnlyCodeInput';
+import { PartCodeOnlyRowInput } from '../partCodeOnlyRowInput';
+import { PartCodeOnlyRow } from '../partCodeOnlyRow';
+import { PartCodeMixedRowCodeElement } from '../partCodeMixedRowCodeElement';
+import { PartCodeMixedRowCodeElementInput } from '../partCodeMixedRowCodeElementInput';
+import { InputFlowDndInput } from '../inputFlowDndInput';
+import { InputFlowDnd } from '../inputFlowDnd';
 
-export type UserModelAttributes = Pick<
+export type UserAttributes = Pick<
   User,
   'id' | 'email' | 'achievements' | 'password'
 >;
 
-export type UserModelCreationAttributes = Omit<
-  UserModelAttributes,
+export type UserCreationAttributes = Omit<
+  UserAttributes,
   'achievements' | 'id'
 >;
 
 @Table({ freezeTableName: true, timestamps: false })
-export class User extends Model<
-  UserModelAttributes,
-  UserModelCreationAttributes
-> {
+export class User extends Model<UserAttributes, UserCreationAttributes> {
   @Column({ primaryKey: true, autoIncrement: true })
-  id: number;
+  readonly id: number;
 
   @Column({ unique: true })
-  email: string;
+  readonly email: string;
 
   @Column
-  password: string;
+  readonly password: string;
 
   @BelongsToMany(() => Achievement, () => UserAchievement)
-  achievements: Achievement[];
+  readonly achievements: Achievement[];
+
+  @BelongsToMany(() => Task, () => TaskStatus)
+  readonly tasks: Task[];
+
+  @BelongsToMany(() => InputFlowOnlyCode, () => InputFlowOnlyCodeInput)
+  readonly inputFlowOnlyCodeBlocks: InputFlowOnlyCode[];
+
+  @BelongsToMany(() => PartCodeOnlyRow, () => PartCodeOnlyRowInput)
+  readonly partCodeOnlyRows: PartCodeOnlyRow[];
+
+  @BelongsToMany(
+    () => PartCodeMixedRowCodeElement,
+    () => PartCodeMixedRowCodeElementInput,
+  )
+  readonly partCodeMixedRowCodeElements: PartCodeMixedRowCodeElementInput[];
+
+  @BelongsToMany(() => InputFlowDnd, () => InputFlowDndInput)
+  readonly inputFlowDndBlocks: InputFlowDnd[];
 }
