@@ -6,7 +6,7 @@ import {
   Model,
   Table,
 } from 'sequelize-typescript';
-import { Task } from '../task';
+import { Task } from '../tasks';
 import { InputFlowOnlyCodeInput } from '../inputFlowOnlyCodeInput';
 import { User } from '../users';
 import { ToPartial } from '../types/utils';

@@ -7,7 +7,7 @@ import {
   Model,
   Table,
 } from 'sequelize-typescript';
-import { Task } from '../task';
+import { Task } from '../tasks';
 import { InputFlowDndOption } from '../inputFlowDndOption';
 import { InputFlowDndInput } from '../inputFlowDndInput';
 import { User } from '../users';

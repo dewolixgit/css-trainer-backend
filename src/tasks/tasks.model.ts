@@ -6,7 +6,7 @@ import {
   Model,
   Table,
 } from 'sequelize-typescript';
-import { TasksSetAttributes, TasksSet } from '../tasksSet';
+import { TasksSetAttributes, TasksSet } from '../tasksSets';
 import { DataTypes } from 'sequelize';
 import { InfoFlowCodeBlock } from '../infoFlowCodeBlock';
 import { InfoFlowImageBlock } from '../infoFlowImageBlock';

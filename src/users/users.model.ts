@@ -2,7 +2,7 @@ import { BelongsToMany, Column, Model, Table } from 'sequelize-typescript';
 import { Achievement } from '../achievements';
 import { UserAchievement } from '../userAchievements';
 import { TaskStatus } from '../taskStatus';
-import { Task } from '../task';
+import { Task } from '../tasks';
 import { InputFlowOnlyCode } from '../inputFlowOnlyCode';
 import { InputFlowOnlyCodeInput } from '../inputFlowOnlyCodeInput';
 import { PartCodeOnlyRowInput } from '../partCodeOnlyRowInput';

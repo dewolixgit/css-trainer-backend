@@ -1,1 +1,1 @@
-export * from './topic.model';
+export * from './topics.model';

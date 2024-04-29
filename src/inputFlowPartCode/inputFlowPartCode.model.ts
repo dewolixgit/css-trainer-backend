@@ -6,7 +6,7 @@ import {
   Model,
   Table,
 } from 'sequelize-typescript';
-import { Task } from '../task';
+import { Task } from '../tasks';
 import { PartCodeOnlyRow } from '../partCodeOnlyRow';
 import { PartCodeMixedRow } from '../partCodeMixedRow';
 import { ToPartial } from '../types/utils';

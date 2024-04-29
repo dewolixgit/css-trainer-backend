@@ -5,7 +5,7 @@ import {
   Model,
   Table,
 } from 'sequelize-typescript';
-import { Task, TaskSection } from '../task';
+import { Task, TaskSection } from '../tasks';
 import { DataTypes } from 'sequelize';
 import { ToPartial } from '../types/utils';
 

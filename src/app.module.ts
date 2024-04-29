@@ -25,8 +25,8 @@ import { PartCodeOnlyRowInput } from './partCodeOnlyRowInput';
 import { PartCodeMixedRowTextElement } from './partCodeMixedRowTextElement';
 import { PartCodeMixedRowCodeElementInput } from './partCodeMixedRowCodeElementInput';
 import { Topic } from './topic';
-import { TasksSet } from './tasksSet';
-import { Task } from './task';
+import { TasksSet } from './tasksSets';
+import { Task } from './tasks';
 import { TaskStatus } from './taskStatus';
 
 @Module({
