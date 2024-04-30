@@ -9,9 +9,14 @@ import { InfoFlowImageBlockDto } from './dto/InfoFlowImageBlock.dto';
 import {
   ContentFlowBlockType,
   InfoFlowBlockType,
+  InputFlowBlockType,
 } from './dto/contentFlowBlock';
 import { InfoFlowTextBlockDto } from './dto/InfoFlowTextBlock.dto';
 import { InfoFlowCodeBlockDto } from './dto/InfoFlowCodeBlock.dto';
+import { InputFlowOnlyCodeDto } from './dto/InputFlowOnlyCode.dto';
+import { InputFlowOnlyCode } from '../inputFlowOnlyCode/inputFlowOnlyCode.model';
+import { InputFlowOnlyCodeInput } from '../inputFlowOnlyCodeInput/inputFlowOnlyCodeInput.model';
+import { User } from '../users/users.model';
 
 @Injectable()
 export class TasksService {
@@ -22,6 +27,10 @@ export class TasksService {
     private readonly _infoFlowTextBlockModel: typeof InfoFlowTextBlock,
     @InjectModel(InfoFlowCodeBlock)
     private readonly _infoFlowCodeBlockModel: typeof InfoFlowCodeBlock,
+    @InjectModel(InputFlowOnlyCode)
+    private readonly _inputFlowOnlyCodeModel: typeof InputFlowOnlyCode,
+    @InjectModel(InputFlowOnlyCodeInput)
+    private readonly _inputFlowOnlyCodeInputModel: typeof InputFlowOnlyCodeInput,
   ) {}
 
   async getAllInfoFlowBlocks(params: {
@@ -72,4 +81,59 @@ export class TasksService {
       ...infoFlowCodeBlocks,
     ];
   }
+
+  async getAllInputFlowOnlyCodeBlocksWithUserInput(params: {
+    taskId: Task['id'];
+    userId: User['id'];
+  }): Promise<InputFlowOnlyCodeDto[]> {
+    const inputFlowOnlyCodeBlocks = await this._inputFlowOnlyCodeModel.findAll({
+      where: { taskId: params.taskId },
+    });
+
+    if (!inputFlowOnlyCodeBlocks.length) {
+      return [];
+    }
+
+    const getInputFlowOnlyCodeInputPromises = inputFlowOnlyCodeBlocks.map(
+      async (flowOnlyCodeBlock): Promise<InputFlowOnlyCodeInput | null> =>
+        this._inputFlowOnlyCodeInputModel.findOne({
+          where: {
+            userId: params.userId,
+            inputFlowId: flowOnlyCodeBlock.id,
+          },
+        }),
+    );
+
+    const inputFlowOnlyCodeInput = await Promise.all(
+      getInputFlowOnlyCodeInputPromises,
+    );
+
+    if (!inputFlowOnlyCodeInput.length) {
+      return [];
+    }
+
+    const inputFlowOnlyCodeWithUserInput =
+      inputFlowOnlyCodeBlocks.map<InputFlowOnlyCodeDto>((inputFlowBlock) => ({
+        id: inputFlowBlock.id,
+        contentType: ContentFlowBlockType.input,
+        inputType: InputFlowBlockType.textArea,
+        order: inputFlowBlock.order,
+        linesCount: inputFlowBlock.linesHeight,
+        value:
+          inputFlowOnlyCodeInput.find(
+            (input) => input && input.inputFlowId === inputFlowBlock.id,
+          )?.value ?? '',
+      }));
+
+    console.log(
+      'inputFlowOnlyCodeWithUserInput',
+      inputFlowOnlyCodeWithUserInput,
+    );
+
+    return inputFlowOnlyCodeWithUserInput;
+  }
+
+  // async getAllInputFlowDndBlocks(params: {
+  //   taskId: Task['id'];
+  // }): Promise<InputFlowDndDto[]> {}
 }

@@ -7,7 +7,6 @@ import { TaskStatus } from '../taskStatus/taskStatus.model';
 import { TasksSetWithProgressDto } from './dto/tasksSetWithProgress.dto';
 import { Topic } from '../topics/topics.model';
 import { TasksService } from '../tasks/tasks.service';
-import { TaskSectionEnum } from '../tasks/types';
 
 @Injectable()
 export class TasksSetsService {
@@ -77,9 +76,14 @@ export class TasksSetsService {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     params: { userId: User['id']; tasksSetId: TasksSet['id'] }, // Todo: Typing
   ): Promise<any> {
-    return this._tasksService.getAllInfoFlowBlocks({
+    return this._tasksService.getAllInputFlowOnlyCodeBlocksWithUserInput({
       taskId: 1,
-      section: TaskSectionEnum.theory,
+      userId: params.userId,
     });
+
+    // return this._tasksService.getAllInfoFlowBlocks({
+    //   taskId: 1,
+    //   section: TaskSectionEnum.theory,
+    // });
   }
 }

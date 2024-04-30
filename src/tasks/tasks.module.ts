@@ -4,6 +4,8 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { InfoFlowImageBlock } from '../infoFlowImageBlock/infoFlowImageBlock.model';
 import { InfoFlowCodeBlock } from '../infoFlowCodeBlock/infoFlowCodeBlock.model';
 import { InfoFlowTextBlock } from '../infoFlowTextBlock/infoFlowTextBlock.model';
+import { InputFlowOnlyCode } from '../inputFlowOnlyCode/inputFlowOnlyCode.model';
+import { InputFlowOnlyCodeInput } from '../inputFlowOnlyCodeInput/inputFlowOnlyCodeInput.model';
 
 @Module({
   imports: [
@@ -11,6 +13,8 @@ import { InfoFlowTextBlock } from '../infoFlowTextBlock/infoFlowTextBlock.model'
       InfoFlowTextBlock,
       InfoFlowCodeBlock,
       InfoFlowImageBlock,
+      InputFlowOnlyCode,
+      InputFlowOnlyCodeInput,
     ]),
   ],
   providers: [TasksService],
