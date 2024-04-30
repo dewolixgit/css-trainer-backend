@@ -5,10 +5,10 @@ import {
   Model,
   Table,
 } from 'sequelize-typescript';
-import { User } from '../users';
-import { InputFlowDndOption } from '../inputFlowDndOption';
-import { InputFlowDndOptionInput } from '../inputFlowDndOptionInput';
-import { InputFlowDnd } from '../inputFlowDnd';
+import { User } from '../users/users.model';
+import { InputFlowDndOption } from '../inputFlowDndOption/inputFlowDndOption.model';
+import { InputFlowDndOptionInput } from '../inputFlowDndOptionInput/inputFlowDndOptionInput.model';
+import { InputFlowDnd } from '../inputFlowDnd/inputFlowDnd.model';
 
 export type InputFlowDndInputAttributes = Pick<
   InputFlowDndInput,

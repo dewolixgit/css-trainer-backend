@@ -1,16 +1,16 @@
 import { BelongsToMany, Column, Model, Table } from 'sequelize-typescript';
-import { Achievement } from '../achievements';
-import { UserAchievement } from '../userAchievements';
-import { TaskStatus } from '../taskStatus';
-import { Task } from '../task';
-import { InputFlowOnlyCode } from '../inputFlowOnlyCode';
-import { InputFlowOnlyCodeInput } from '../inputFlowOnlyCodeInput';
-import { PartCodeOnlyRowInput } from '../partCodeOnlyRowInput';
-import { PartCodeOnlyRow } from '../partCodeOnlyRow';
-import { PartCodeMixedRowCodeElement } from '../partCodeMixedRowCodeElement';
-import { PartCodeMixedRowCodeElementInput } from '../partCodeMixedRowCodeElementInput';
-import { InputFlowDndInput } from '../inputFlowDndInput';
-import { InputFlowDnd } from '../inputFlowDnd';
+import { Achievement } from '../achievements/achievements.model';
+import { UserAchievement } from '../userAchievements/userAchievements.model';
+import { TaskStatus } from '../taskStatus/taskStatus.model';
+import { Task } from '../tasks/tasks.model';
+import { InputFlowOnlyCode } from '../inputFlowOnlyCode/inputFlowOnlyCode.model';
+import { InputFlowOnlyCodeInput } from '../inputFlowOnlyCodeInput/inputFlowOnlyCodeInput.model';
+import { PartCodeOnlyRowInput } from '../partCodeOnlyRowInput/partCodeOnlyRowInput.model';
+import { PartCodeOnlyRow } from '../partCodeOnlyRow/partCodeOnlyRow.model';
+import { PartCodeMixedRowCodeElement } from '../partCodeMixedRowCodeElement/partCodeMixedRowCodeElement.model';
+import { PartCodeMixedRowCodeElementInput } from '../partCodeMixedRowCodeElementInput/partCodeMixedRowCodeElementInput.model';
+import { InputFlowDndInput } from '../inputFlowDndInput/inputFlowDndInput.model';
+import { InputFlowDnd } from '../inputFlowDnd/inputFlowDnd.model';
 
 export type UserAttributes = Pick<
   User,

@@ -6,9 +6,9 @@ import {
   Model,
   Table,
 } from 'sequelize-typescript';
-import { Task } from '../task';
-import { InputFlowOnlyCodeInput } from '../inputFlowOnlyCodeInput';
-import { User } from '../users';
+import { Task } from '../tasks/tasks.model';
+import { InputFlowOnlyCodeInput } from '../inputFlowOnlyCodeInput/inputFlowOnlyCodeInput.model';
+import { User } from '../users/users.model';
 import { ToPartial } from '../types/utils';
 
 export type InputFlowOnlyCodeAttributes = Pick<

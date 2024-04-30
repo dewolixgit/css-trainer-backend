@@ -5,7 +5,7 @@ import {
   Model,
   Table,
 } from 'sequelize-typescript';
-import { Task, TaskSection } from '../task';
+import { Task, TaskSection } from '../tasks/tasks.model';
 import { DataTypes } from 'sequelize';
 
 type InfoFlowCodeBlockAttributes = Pick<

@@ -1,6 +1,6 @@
 import { Column, ForeignKey, Model, Table } from 'sequelize-typescript';
-import { User } from '../users';
-import { Task } from '../task';
+import { User } from '../users/users.model';
+import { Task } from '../tasks/tasks.model';
 
 export type TaskStatusAttributes = Pick<
   TaskStatus,

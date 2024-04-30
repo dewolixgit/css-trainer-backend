@@ -1,6 +1,6 @@
 import { Column, ForeignKey, Model, Table } from 'sequelize-typescript';
-import { User } from '../users';
-import { PartCodeMixedRowCodeElement } from '../partCodeMixedRowCodeElement';
+import { User } from '../users/users.model';
+import { PartCodeMixedRowCodeElement } from '../partCodeMixedRowCodeElement/partCodeMixedRowCodeElement.model';
 
 export type PartCodeMixedRowCodeElementInputAttributes = Pick<
   PartCodeMixedRowCodeElementInput,

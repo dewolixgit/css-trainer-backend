@@ -1,6 +1,6 @@
 import { Column, ForeignKey, Model, Table } from 'sequelize-typescript';
-import { InputFlowDndOption } from '../inputFlowDndOption';
-import { InputFlowDndInput } from '../inputFlowDndInput';
+import { InputFlowDndOption } from '../inputFlowDndOption/inputFlowDndOption.model';
+import { InputFlowDndInput } from '../inputFlowDndInput/inputFlowDndInput.model';
 
 export type InputFlowDndOptionInputAttributes = Pick<
   InputFlowDndOptionInput,

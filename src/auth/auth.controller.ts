@@ -6,11 +6,11 @@ import {
   UnauthorizedException,
   BadRequestException,
 } from '@nestjs/common';
-import { ToAuthUserDto } from './dto';
+import { ToAuthUserDto } from './dto/ToAuthUserDto';
 import { AuthService } from './auth.service';
 import { loginRegistrationValidationPipe } from './loginValidation.pipe';
 import { t } from '../config/translation';
-import { UsersService } from '../users';
+import { UsersService } from '../users/users.service';
 
 @Controller('auth')
 export class AuthController {

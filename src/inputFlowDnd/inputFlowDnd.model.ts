@@ -7,10 +7,10 @@ import {
   Model,
   Table,
 } from 'sequelize-typescript';
-import { Task } from '../task';
-import { InputFlowDndOption } from '../inputFlowDndOption';
-import { InputFlowDndInput } from '../inputFlowDndInput';
-import { User } from '../users';
+import { Task } from '../tasks/tasks.model';
+import { InputFlowDndOption } from '../inputFlowDndOption/inputFlowDndOption.model';
+import { InputFlowDndInput } from '../inputFlowDndInput/inputFlowDndInput.model';
+import { User } from '../users/users.model';
 import { ToPartial } from '../types/utils';
 
 export type InputFlowDndAttributes = Pick<

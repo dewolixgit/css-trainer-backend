@@ -5,7 +5,7 @@ import {
   Model,
   Table,
 } from 'sequelize-typescript';
-import { PartCodeMixedRow } from '../partCodeMixedRow';
+import { PartCodeMixedRow } from '../partCodeMixedRow/partCodeMixedRow.model';
 import { ToPartial } from '../types/utils';
 
 export type PartCodeMixedRowTextElementAttributes = Pick<
