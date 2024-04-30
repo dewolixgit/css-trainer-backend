@@ -1,5 +1,5 @@
 import { Column, HasMany, Model, Table } from 'sequelize-typescript';
-import { TasksSet } from '../tasksSets';
+import { TasksSet } from '../tasksSets/tasksSets.model';
 import { ToPartial } from '../types/utils';
 
 export type TopicAttributes = Pick<

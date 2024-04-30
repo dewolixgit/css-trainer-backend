@@ -3,11 +3,13 @@ import {
   Column,
   DataType,
   ForeignKey,
+  HasMany,
   Model,
   Table,
 } from 'sequelize-typescript';
-import { Topic } from '../topic';
+import { Topic } from '../topics/topics.model';
 import { ToPartial } from '../types/utils';
+import { Task } from '../tasks/tasks.model';
 
 export type TasksSetAttributes = Pick<
   TasksSet,
@@ -42,6 +44,9 @@ export class TasksSet extends Model<
 
   @Column({ defaultValue: 0 })
   readonly order: number;
+
+  @HasMany(() => Task)
+  readonly tasks: Task[];
 
   @Column({ allowNull: true, type: DataType.INTEGER })
   @ForeignKey(() => Topic)

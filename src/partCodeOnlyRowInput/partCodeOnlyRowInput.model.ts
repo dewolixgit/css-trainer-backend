@@ -1,6 +1,6 @@
 import { Column, ForeignKey, Model, Table } from 'sequelize-typescript';
-import { PartCodeOnlyRow } from '../partCodeOnlyRow';
-import { User } from '../users';
+import { PartCodeOnlyRow } from '../partCodeOnlyRow/partCodeOnlyRow.model';
+import { User } from '../users/users.model';
 
 export type PartCodeOnlyRowInputAttributes = Pick<
   PartCodeOnlyRowInput,

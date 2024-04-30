@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { UsersService } from '../users';
-import { RegisteredUserDto, ToAuthUserDto } from './dto';
+import { UsersService } from '../users/users.service';
+import { ToAuthUserDto } from './dto/ToAuthUserDto';
+import { RegisteredUserDto } from './dto/RegisteredUserDto';
 import { JwtService } from '@nestjs/jwt';
 import { PASSWORD_HASH_SALT_ROUNDS } from './config';
 import { compare, hash } from 'bcrypt';

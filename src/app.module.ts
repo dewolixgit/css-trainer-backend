@@ -2,32 +2,36 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { Achievement } from './achievements';
-import { User, UsersModule } from './users';
-import { UserAchievement } from './userAchievements';
+import { Achievement } from './achievements/achievements.model';
+import { UsersModule } from './users/users.module';
+import { User } from './users/users.model';
+import { UserAchievement } from './userAchievements/userAchievements.model';
 import { ConfigModule } from '@nestjs/config';
-import { AuthModule, AuthService } from './auth';
+import { AuthModule } from './auth/auth.module';
+import { AuthService } from './auth/auth.service';
 import { JwtService } from '@nestjs/jwt';
-import { InfoFlowTextBlock } from './infoFlowTextBlock';
-import { InfoFlowImageBlock } from './infoFlowImageBlock';
-import { InfoFlowCodeBlock } from './infoFlowCodeBlock';
-import { InputFlowDnd } from './inputFlowDnd';
-import { InputFlowDndOption } from './inputFlowDndOption';
-import { InputFlowDndInput } from './inputFlowDndInput';
-import { InputFlowDndOptionInput } from './inputFlowDndOptionInput';
-import { InputFlowOnlyCode } from './inputFlowOnlyCode';
-import { InputFlowOnlyCodeInput } from './inputFlowOnlyCodeInput';
-import { InputFlowPartCode } from './inputFlowPartCode';
-import { PartCodeMixedRowCodeElement } from './partCodeMixedRowCodeElement';
-import { PartCodeMixedRow } from './partCodeMixedRow';
-import { PartCodeOnlyRow } from './partCodeOnlyRow';
-import { PartCodeOnlyRowInput } from './partCodeOnlyRowInput';
-import { PartCodeMixedRowTextElement } from './partCodeMixedRowTextElement';
-import { PartCodeMixedRowCodeElementInput } from './partCodeMixedRowCodeElementInput';
-import { Topic } from './topic';
-import { TasksSet } from './tasksSets';
-import { Task } from './tasks';
-import { TaskStatus } from './taskStatus';
+import { InfoFlowTextBlock } from './infoFlowTextBlock/infoFlowTextBlock.model';
+import { InfoFlowImageBlock } from './infoFlowImageBlock/infoFlowImageBlock.model';
+import { InfoFlowCodeBlock } from './infoFlowCodeBlock/infoFlowCodeBlock.model';
+import { InputFlowDnd } from './inputFlowDnd/inputFlowDnd.model';
+import { InputFlowDndOption } from './inputFlowDndOption/inputFlowDndOption.model';
+import { InputFlowDndInput } from './inputFlowDndInput/inputFlowDndInput.model';
+import { InputFlowDndOptionInput } from './inputFlowDndOptionInput/inputFlowDndOptionInput.model';
+import { InputFlowOnlyCode } from './inputFlowOnlyCode/inputFlowOnlyCode.model';
+import { InputFlowOnlyCodeInput } from './inputFlowOnlyCodeInput/inputFlowOnlyCodeInput.model';
+import { InputFlowPartCode } from './inputFlowPartCode/inputFlowPartCode.model';
+import { PartCodeMixedRowCodeElement } from './partCodeMixedRowCodeElement/partCodeMixedRowCodeElement.model';
+import { PartCodeMixedRow } from './partCodeMixedRow/partCodeMixedRow.model';
+import { PartCodeOnlyRow } from './partCodeOnlyRow/partCodeOnlyRow.model';
+import { PartCodeOnlyRowInput } from './partCodeOnlyRowInput/partCodeOnlyRowInput.model';
+import { PartCodeMixedRowTextElement } from './partCodeMixedRowTextElement/partCodeMixedRowTextElement.model';
+import { PartCodeMixedRowCodeElementInput } from './partCodeMixedRowCodeElementInput/partCodeMixedRowCodeElementInput.model';
+import { TopicsModule } from './topics/topics.module';
+import { Topic } from './topics/topics.model';
+import { TasksSet } from './tasksSets/tasksSets.model';
+import { Task } from './tasks/tasks.model';
+import { TaskStatus } from './taskStatus/taskStatus.model';
+import { TasksSetsModule } from './tasksSets/tasksSets.module';
 
 @Module({
   imports: [
@@ -89,6 +93,8 @@ import { TaskStatus } from './taskStatus';
     SequelizeModule.forFeature([Achievement]),
     UsersModule,
     AuthModule,
+    TopicsModule,
+    TasksSetsModule,
   ],
   controllers: [AppController],
   providers: [AppService, AuthService, JwtService],

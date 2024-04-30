@@ -6,9 +6,9 @@ import {
   Model,
   Table,
 } from 'sequelize-typescript';
-import { PartCodeMixedRow } from '../partCodeMixedRow';
-import { PartCodeMixedRowCodeElementInput } from '../partCodeMixedRowCodeElementInput';
-import { User } from '../users';
+import { PartCodeMixedRow } from '../partCodeMixedRow/partCodeMixedRow.model';
+import { PartCodeMixedRowCodeElementInput } from '../partCodeMixedRowCodeElementInput/partCodeMixedRowCodeElementInput.model';
+import { User } from '../users/users.model';
 import { ToPartial } from '../types/utils';
 
 export type PartCodeMixedRowCodeElementAttributes = Pick<

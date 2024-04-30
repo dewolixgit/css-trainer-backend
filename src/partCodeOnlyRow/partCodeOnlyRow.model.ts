@@ -6,9 +6,9 @@ import {
   Model,
   Table,
 } from 'sequelize-typescript';
-import { InputFlowPartCode } from '../inputFlowPartCode';
-import { PartCodeOnlyRowInput } from '../partCodeOnlyRowInput';
-import { User } from '../users';
+import { InputFlowPartCode } from '../inputFlowPartCode/inputFlowPartCode.model';
+import { PartCodeOnlyRowInput } from '../partCodeOnlyRowInput/partCodeOnlyRowInput.model';
+import { User } from '../users/users.model';
 import { ToPartial } from '../types/utils';
 
 export type PartCodeOnlyRowAttributes = Pick<

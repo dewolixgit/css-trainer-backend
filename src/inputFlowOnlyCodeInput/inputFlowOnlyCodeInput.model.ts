@@ -2,8 +2,8 @@ import { Column, ForeignKey, Model, Table } from 'sequelize-typescript';
 import {
   InputFlowOnlyCode,
   InputFlowOnlyCodeAttributes,
-} from '../inputFlowOnlyCode';
-import { User } from '../users';
+} from '../inputFlowOnlyCode/inputFlowOnlyCode.model';
+import { User } from '../users/users.model';
 
 export type InputFlowOnlyCodeInputAttributes = Pick<
   InputFlowOnlyCodeInput,

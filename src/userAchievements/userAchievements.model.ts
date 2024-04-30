@@ -1,6 +1,6 @@
 import { Column, ForeignKey, Model, Table } from 'sequelize-typescript';
-import { User } from '../users';
-import { Achievement } from '../achievements';
+import { User } from '../users/users.model';
+import { Achievement } from '../achievements/achievements.model';
 
 export type UserAchievementAttributes = Pick<
   UserAchievement,

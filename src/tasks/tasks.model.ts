@@ -6,14 +6,14 @@ import {
   Model,
   Table,
 } from 'sequelize-typescript';
-import { TasksSetAttributes, TasksSet } from '../tasksSets';
+import { TasksSetAttributes, TasksSet } from '../tasksSets/tasksSets.model';
 import { DataTypes } from 'sequelize';
-import { InfoFlowCodeBlock } from '../infoFlowCodeBlock';
-import { InfoFlowImageBlock } from '../infoFlowImageBlock';
-import { InfoFlowTextBlock } from '../infoFlowTextBlock';
-import { InputFlowOnlyCode } from '../inputFlowOnlyCode';
-import { InputFlowPartCode } from '../inputFlowPartCode';
-import { InputFlowDnd } from '../inputFlowDnd';
+import { InfoFlowCodeBlock } from '../infoFlowCodeBlock/infoFlowCodeBlock.model';
+import { InfoFlowImageBlock } from '../infoFlowImageBlock/infoFlowImageBlock.model';
+import { InfoFlowTextBlock } from '../infoFlowTextBlock/infoFlowTextBlock.model';
+import { InputFlowOnlyCode } from '../inputFlowOnlyCode/inputFlowOnlyCode.model';
+import { InputFlowPartCode } from '../inputFlowPartCode/inputFlowPartCode.model';
+import { InputFlowDnd } from '../inputFlowDnd/inputFlowDnd.model';
 import { ToPartial } from '../types/utils';
 
 export enum TaskSkill {
