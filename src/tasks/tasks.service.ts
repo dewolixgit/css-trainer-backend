@@ -14,6 +14,7 @@ import {
   PartCodeMixedRowCodeElementDto,
   PartCodeMixedRowDto,
   PartCodeMixedRowTextElementDto,
+  PartCodeOnlyRowDto,
 } from './dto/InputFlowPartCode.dto';
 import { PartCodeMixedRowCodeElement } from '../partCodeMixedRowCodeElement/partCodeMixedRowCodeElement.model';
 import { PartCodeMixedRowCodeElementInput } from '../partCodeMixedRowCodeElementInput/partCodeMixedRowCodeElementInput.model';
@@ -26,6 +27,7 @@ import { InfoFlowImageBlockService } from '../infoFlowImageBlock/infoFlowImageBl
 import { InfoFlowCodeBlockService } from '../infoFlowCodeBlock/infoFlowCodeBlock.service';
 import { PartCodeMixedRowService } from '../partCodeMixedRow/partCodeMixedRow.service';
 import { InputFlowPartCode } from '../inputFlowPartCode/inputFlowPartCode.model';
+import { PartCodeOnlyRowService } from '../partCodeOnlyRow/partCodeOnlyRow.service';
 
 @Injectable()
 export class TasksService {
@@ -35,6 +37,7 @@ export class TasksService {
     private readonly _infoFlowImageBlockService: InfoFlowImageBlockService,
     private readonly _infoFlowCodeBlockService: InfoFlowCodeBlockService,
     private readonly _inputFlowOnlyCodeService: InputFlowOnlyCodeService,
+    private readonly _partCodeOnlyRowService: PartCodeOnlyRowService,
     private readonly _partCodeMixedRowService: PartCodeMixedRowService,
     private readonly _partCodeMixedRowTextElementService: PartCodeMixedRowTextElementService,
     private readonly _partCodeMixedRowCodeElementService: PartCodeMixedRowCodeElementService,
@@ -83,6 +86,16 @@ export class TasksService {
     return this._inputFlowOnlyCodeService.getAllInputFlowOnlyCodeBlocksWithUserInput(
       { taskId: params.taskId, userId: params.userId },
     );
+  }
+
+  async getAllPartCodeOnlyRowsWithUserInput(params: {
+    userId: User['id'];
+    inputFlowPartCodeId: InputFlowPartCode['id'];
+  }): Promise<PartCodeOnlyRowDto[]> {
+    return this._partCodeOnlyRowService.getAllPartCodeOnlyRowsWithUserInput({
+      userId: params.userId,
+      inputFlowPartCodeId: params.inputFlowPartCodeId,
+    });
   }
 
   async getAllPartCodeMixedRowsWithUserInput(params: {
