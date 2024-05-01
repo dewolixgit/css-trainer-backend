@@ -25,6 +25,8 @@ import { PartCodeMixedRowModule } from '../partCodeMixedRow/partCodeMixedRow.mod
 import { PartCodeMixedRowService } from '../partCodeMixedRow/partCodeMixedRow.service';
 import { PartCodeOnlyRowModule } from '../partCodeOnlyRow/partCodeOnlyRow.module';
 import { PartCodeOnlyRowService } from '../partCodeOnlyRow/partCodeOnlyRow.service';
+import { InputFlowPartCodeService } from '../inputFlowPartCode/inputFlowPartCode.service';
+import { InputFlowPartCodeModule } from '../inputFlowPartCode/inputFlowPartCode.module';
 
 @Module({
   imports: [
@@ -42,6 +44,7 @@ import { PartCodeOnlyRowService } from '../partCodeOnlyRow/partCodeOnlyRow.servi
     InfoFlowTextBlockModule,
     InfoFlowCodeBlockModule,
     InputFlowOnlyCodeModule,
+    InputFlowPartCodeModule,
     PartCodeOnlyRowModule,
     PartCodeMixedRowModule,
     PartCodeMixedRowTextElementModule,
@@ -53,6 +56,7 @@ import { PartCodeOnlyRowService } from '../partCodeOnlyRow/partCodeOnlyRow.servi
     InfoFlowTextBlockService,
     InfoFlowCodeBlockService,
     InputFlowOnlyCodeService,
+    InputFlowPartCodeService,
     PartCodeOnlyRowService,
     PartCodeMixedRowService,
     PartCodeMixedRowTextElementService,
@@ -65,6 +69,7 @@ import { PartCodeOnlyRowService } from '../partCodeOnlyRow/partCodeOnlyRow.servi
     InfoFlowTextBlockService,
     InfoFlowCodeBlockService,
     InputFlowOnlyCodeService,
+    InputFlowPartCodeService,
     PartCodeOnlyRowService,
     PartCodeMixedRowService,
     PartCodeMixedRowTextElementService,

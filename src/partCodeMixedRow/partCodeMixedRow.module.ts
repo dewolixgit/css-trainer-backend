@@ -17,6 +17,11 @@ import { PartCodeMixedRowCodeElementService } from '../partCodeMixedRowCodeEleme
     PartCodeMixedRowCodeElementService,
     PartCodeMixedRowTextElementModule,
   ],
-  exports: [SequelizeModule, PartCodeMixedRowService],
+  exports: [
+    SequelizeModule,
+    PartCodeMixedRowService,
+    PartCodeMixedRowCodeElementService,
+    PartCodeMixedRowTextElementModule,
+  ],
 })
 export class PartCodeMixedRowModule {}

@@ -11,6 +11,7 @@ import { InputFlowOnlyCodeInput } from '../inputFlowOnlyCodeInput/inputFlowOnlyC
 import { User } from '../users/users.model';
 import { PartCodeMixedRow } from '../partCodeMixedRow/partCodeMixedRow.model';
 import {
+  InputFlowPartCodeDto,
   PartCodeMixedRowCodeElementDto,
   PartCodeMixedRowDto,
   PartCodeMixedRowTextElementDto,
@@ -28,6 +29,7 @@ import { InfoFlowCodeBlockService } from '../infoFlowCodeBlock/infoFlowCodeBlock
 import { PartCodeMixedRowService } from '../partCodeMixedRow/partCodeMixedRow.service';
 import { InputFlowPartCode } from '../inputFlowPartCode/inputFlowPartCode.model';
 import { PartCodeOnlyRowService } from '../partCodeOnlyRow/partCodeOnlyRow.service';
+import { InputFlowPartCodeService } from '../inputFlowPartCode/inputFlowPartCode.service';
 
 @Injectable()
 export class TasksService {
@@ -37,6 +39,7 @@ export class TasksService {
     private readonly _infoFlowImageBlockService: InfoFlowImageBlockService,
     private readonly _infoFlowCodeBlockService: InfoFlowCodeBlockService,
     private readonly _inputFlowOnlyCodeService: InputFlowOnlyCodeService,
+    private readonly _inputFlowPartCodeService: InputFlowPartCodeService,
     private readonly _partCodeOnlyRowService: PartCodeOnlyRowService,
     private readonly _partCodeMixedRowService: PartCodeMixedRowService,
     private readonly _partCodeMixedRowTextElementService: PartCodeMixedRowTextElementService,
@@ -86,6 +89,16 @@ export class TasksService {
     return this._inputFlowOnlyCodeService.getAllInputFlowOnlyCodeBlocksWithUserInput(
       { taskId: params.taskId, userId: params.userId },
     );
+  }
+
+  async getAllInputFlowPartCodeBlocksWithUserInput(params: {
+    taskId: Task['id'];
+    userId: User['id'];
+  }): Promise<InputFlowPartCodeDto[]> {
+    return this._inputFlowPartCodeService.getAllInputFlowPartCodeWithUserInput({
+      userId: params.userId,
+      taskId: params.taskId,
+    });
   }
 
   async getAllPartCodeOnlyRowsWithUserInput(params: {
