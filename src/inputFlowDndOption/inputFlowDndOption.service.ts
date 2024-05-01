@@ -17,6 +17,22 @@ export class InputFlowDndOptionService {
     private readonly _inputFlowDndOptionInputModel: typeof InputFlowDndOptionInput,
   ) {}
 
+  async getAllInputFlowDndOptions(params: {
+    inputFlowDndId: InputFlowDnd['id'];
+  }): Promise<InputFlowDndOptionDto[]> {
+    return (
+      await this._inputFlowDndOptionModel.findAll({
+        where: {
+          inputFlowDndId: params.inputFlowDndId,
+        },
+      })
+    ).map((option) => ({
+      id: option.id,
+      code: option.code,
+      order: option.initialOrder,
+    }));
+  }
+
   async getAllInputFlowDndOptionsWithUserInput(params: {
     inputFlowDndId: InputFlowDnd['id'];
     inputFlowDndInputId: InputFlowDndInput['id'];

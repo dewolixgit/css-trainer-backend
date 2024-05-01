@@ -31,9 +31,10 @@ import { InputFlowPartCode } from '../inputFlowPartCode/inputFlowPartCode.model'
 import { PartCodeOnlyRowService } from '../partCodeOnlyRow/partCodeOnlyRow.service';
 import { InputFlowPartCodeService } from '../inputFlowPartCode/inputFlowPartCode.service';
 import { InputFlowDndOptionService } from '../inputFlowDndOption/inputFlowDndOption.service';
-import { InputFlowDndOptionDto } from './dto/InputFlowDnd.dto';
+import { InputFlowDndDto, InputFlowDndOptionDto } from './dto/InputFlowDnd.dto';
 import { InputFlowDndInput } from '../inputFlowDndInput/inputFlowDndInput.model';
 import { InputFlowDnd } from '../inputFlowDnd/inputFlowDnd.model';
+import { InputFlowDndService } from '../inputFlowDnd/inputFlowDnd.service';
 
 @Injectable()
 export class TasksService {
@@ -48,6 +49,7 @@ export class TasksService {
     private readonly _partCodeMixedRowService: PartCodeMixedRowService,
     private readonly _partCodeMixedRowTextElementService: PartCodeMixedRowTextElementService,
     private readonly _partCodeMixedRowCodeElementService: PartCodeMixedRowCodeElementService,
+    private readonly _inputFlowDndService: InputFlowDndService,
     private readonly _inputFlowDndOptionService: InputFlowDndOptionService,
     @InjectModel(InfoFlowImageBlock)
     private readonly _infoFlowImageBlockModel: typeof InfoFlowImageBlock,
@@ -155,6 +157,16 @@ export class TasksService {
         userId: params.userId,
       },
     );
+  }
+
+  async getAllInputFlowDndWithUserInput(params: {
+    taskId: Task['id'];
+    userId: User['id'];
+  }): Promise<InputFlowDndDto[]> {
+    return this._inputFlowDndService.getAllInputFlowDndWithUserInput({
+      taskId: params.taskId,
+      userId: params.userId,
+    });
   }
 
   // async getAllInputFlowDndBlocks(params: {

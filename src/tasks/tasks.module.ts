@@ -29,6 +29,8 @@ import { InputFlowPartCodeService } from '../inputFlowPartCode/inputFlowPartCode
 import { InputFlowPartCodeModule } from '../inputFlowPartCode/inputFlowPartCode.module';
 import { InputFlowDndOptionModule } from '../inputFlowDndOption/inputFlowDndOption.module';
 import { InputFlowDndOptionService } from '../inputFlowDndOption/inputFlowDndOption.service';
+import { InputFlowDndModule } from '../inputFlowDnd/inputFlowDnd.module';
+import { InputFlowDndService } from '../inputFlowDnd/inputFlowDnd.service';
 
 @Module({
   imports: [
@@ -51,6 +53,7 @@ import { InputFlowDndOptionService } from '../inputFlowDndOption/inputFlowDndOpt
     PartCodeMixedRowModule,
     PartCodeMixedRowTextElementModule,
     PartCodeMixedRowCodeElementModule,
+    InputFlowDndModule,
     InputFlowDndOptionModule,
   ],
   providers: [
@@ -64,6 +67,7 @@ import { InputFlowDndOptionService } from '../inputFlowDndOption/inputFlowDndOpt
     PartCodeMixedRowService,
     PartCodeMixedRowTextElementService,
     PartCodeMixedRowCodeElementService,
+    InputFlowDndService,
     InputFlowDndOptionService,
   ],
   exports: [
@@ -78,6 +82,7 @@ import { InputFlowDndOptionService } from '../inputFlowDndOption/inputFlowDndOpt
     PartCodeMixedRowService,
     PartCodeMixedRowTextElementService,
     PartCodeMixedRowCodeElementModule,
+    InputFlowDndService,
     InputFlowDndOptionService,
   ],
 })
