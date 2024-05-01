@@ -12,6 +12,6 @@ import { InputFlowDndOptionModule } from '../inputFlowDndOption/inputFlowDndOpti
     InputFlowDndOptionModule,
   ],
   providers: [InputFlowDndService, InputFlowDndOptionService],
-  exports: [InputFlowDndService, SequelizeModule],
+  exports: [InputFlowDndService, SequelizeModule, InputFlowDndOptionService],
 })
 export class InputFlowDndModule {}

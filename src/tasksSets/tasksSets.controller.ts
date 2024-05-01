@@ -16,6 +16,7 @@ import {
 } from '../topics/dto/ToClientTopic.dto';
 import { Topic } from '../topics/topics.model';
 import { TasksSet } from './tasksSets.model';
+import { TasksSetProgressAndTaskDetailsDto } from './dto/TasksSetProgressAndTaskDetails.dto';
 
 @Controller('tasks-sets')
 export class TasksSetsController {
@@ -50,8 +51,7 @@ export class TasksSetsController {
   async getTasksSetProgressAndLastCompletedTask(
     @Req() request: AuthenticatedRequest,
     @Param('id', ParseIntPipe) id: TasksSet['id'],
-    // Todo: Typing
-  ): Promise<any> {
+  ): Promise<TasksSetProgressAndTaskDetailsDto | null> {
     return this._tasksSetsService.getTasksSetProgressAndLastCompletedTask({
       tasksSetId: id,
       userId: request.user.userId,

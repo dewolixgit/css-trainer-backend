@@ -19,3 +19,7 @@ export type InputFlowBlocksDtoUnion =
   | InputFlowDndDto
   | InputFlowOnlyCodeDto
   | InputFlowPartCodeDto;
+
+export type ContentFlowBlocksDtoUnion =
+  | InfoFlowBlocksDtoUnion
+  | InputFlowBlocksDtoUnion;

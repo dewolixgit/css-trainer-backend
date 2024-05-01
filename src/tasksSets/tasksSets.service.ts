@@ -4,16 +4,18 @@ import { InjectModel } from '@nestjs/sequelize';
 import { User } from '../users/users.model';
 import { Task } from '../tasks/tasks.model';
 import { TaskStatus } from '../taskStatus/taskStatus.model';
-import { TasksSetWithProgressDto } from './dto/tasksSetWithProgress.dto';
+import { TasksSetWithProgressDto } from './dto/TasksSetWithProgress.dto';
 import { Topic } from '../topics/topics.model';
 import { TasksService } from '../tasks/tasks.service';
+import { TaskOfSetProgressDto } from './dto/TaskOfSetProgress.dto';
+import { TasksSetProgressAndTaskDetailsDto } from './dto/TasksSetProgressAndTaskDetails.dto';
+import { TasksSetProgressDto } from './dto/TasksSetProgress.dto';
 
 @Injectable()
 export class TasksSetsService {
   constructor(
     private readonly _tasksService: TasksService,
     @InjectModel(TasksSet) private readonly _tasksSetsModel: typeof TasksSet,
-    @InjectModel(Task) private readonly _tasksModel: typeof Task,
     @InjectModel(TaskStatus)
     private readonly _taskStatusesModel: typeof TaskStatus,
   ) {}
@@ -71,54 +73,99 @@ export class TasksSetsService {
     return await Promise.all(getTasksWithProgressPromises);
   }
 
-  async getTasksSetProgressAndLastCompletedTask(
-    // Todo: Use params
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    params: { userId: User['id']; tasksSetId: TasksSet['id'] }, // Todo: Typing
-  ): Promise<any> {
-    return this._tasksService.getAllInputFlowDndWithUserInput({
-      userId: params.userId,
-      taskId: 1,
+  private async _getTasksSetProgressDto(params: {
+    userId: User['id'];
+    tasksSetId: TasksSet['id'];
+  }): Promise<TasksSetProgressDto | null> {
+    const tasksSet = await this._tasksSetsModel.findOne({
+      where: {
+        id: params.tasksSetId,
+      },
     });
 
-    // return this._tasksService.getAllInputFlowDndOptionsWithUserInput({
-    //   userId: params.userId,
-    //   inputFlowDndId: 2,
-    //   inputFlowDndInputId: 1,
-    // });
+    if (!tasksSet) {
+      return null;
+    }
 
-    // return this._tasksService.getAllInputFlowPartCodeBlocksWithUserInput({
-    //   userId: params.userId,
-    //   taskId: 1,
-    // });
+    const tasksWithProgressOrdered =
+      await this._tasksService.getAllTasksProgressOrdered({
+        userId: params.userId,
+        tasksSetId: params.tasksSetId,
+      });
 
-    // return this._tasksService.getAllPartCodeOnlyRowsWithUserInput({
-    //   userId: params.userId,
-    //   inputFlowPartCodeId: 1,
-    // });
+    return {
+      id: tasksSet.id,
+      parentTopicId: tasksSet.topicId,
+      tasksStatus: tasksWithProgressOrdered,
+    };
+  }
 
-    // return this._tasksService.getAllPartCodeMixedRowsWithUserInput({
-    //   userId: params.userId,
-    //   inputFlowPartCodeId: 1,
-    // });
+  /**
+   * Returns the first not completed task within ordered tasks of the set
+   * Is expected to receive non-empty array
+   */
+  private _getTaskToOpenWithinTasksWithProgress(
+    tasksSetProgress: TaskOfSetProgressDto[],
+  ): TaskOfSetProgressDto {
+    const firstUncompletedTask = tasksSetProgress.findIndex(
+      (task) => !task.completed,
+    );
 
-    // return this._tasksService.getAllPartCodeMixedTextElement({
-    //   rowId: 1,
-    // });
+    // All tasks are completed
+    if (firstUncompletedTask === -1) {
+      return tasksSetProgress[tasksSetProgress.length - 1];
+    }
 
-    // return this._tasksService.getAllPartCodeMixedRowCodeElementsWithUserInput({
-    //   rowId: 1,
-    //   userId: params.userId,
-    // });
+    return tasksSetProgress[firstUncompletedTask];
+  }
 
-    // return this._tasksService.getAllInputFlowOnlyCodeBlocksWithUserInput({
-    //   taskId: 1,
-    //   userId: params.userId,
-    // });
+  async getTasksSetProgressAndLastCompletedTask(
+    params: { userId: User['id']; tasksSetId: TasksSet['id'] }, // Todo: Typing
+  ): Promise<TasksSetProgressAndTaskDetailsDto | null> {
+    const tasksSetProgress = await this._getTasksSetProgressDto({
+      userId: params.userId,
+      tasksSetId: params.tasksSetId,
+    });
 
-    // return this._tasksService.getAllInfoFlowBlocks({
-    //   taskId: 1,
-    //   section: TaskSectionEnum.theory,
-    // });
+    if (!tasksSetProgress) {
+      return null;
+    }
+
+    if (!tasksSetProgress.tasksStatus.length) {
+      return {
+        tasksSetStatus: tasksSetProgress,
+        theory: null,
+        practice: null,
+      };
+    }
+
+    const taskToOpen = this._getTaskToOpenWithinTasksWithProgress(
+      tasksSetProgress.tasksStatus,
+    );
+
+    const getTaskSectionsPromises = [
+      this._tasksService.getAllTheorySectionFlowBlocks({
+        taskId: taskToOpen.data.id,
+      }),
+      this._tasksService.getAllPracticeSectionFlowBlocks({
+        taskId: taskToOpen.data.id,
+        userId: params.userId,
+      }),
+    ] as const;
+
+    const [taskTheory, taskPractice] = await Promise.all(
+      getTaskSectionsPromises,
+    );
+
+    return {
+      tasksSetStatus: tasksSetProgress,
+      theory: {
+        content: taskTheory,
+      },
+      practice: {
+        content: taskPractice,
+        task: taskToOpen,
+      },
+    };
   }
 }
