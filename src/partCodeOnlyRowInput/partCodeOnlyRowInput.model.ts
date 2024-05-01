@@ -4,7 +4,7 @@ import { User } from '../users/users.model';
 
 export type PartCodeOnlyRowInputAttributes = Pick<
   PartCodeOnlyRowInput,
-  'id' | 'rowId' | 'userId'
+  'id' | 'value' | 'rowId' | 'userId'
 >;
 
 export type PartCodeOnlyRowCreationAttributes = Omit<
@@ -19,6 +19,9 @@ export class PartCodeOnlyRowInput extends Model<
 > {
   @Column({ primaryKey: true, autoIncrement: true })
   readonly id: number;
+
+  @Column
+  readonly value: string;
 
   @Column
   @ForeignKey(() => PartCodeOnlyRow)

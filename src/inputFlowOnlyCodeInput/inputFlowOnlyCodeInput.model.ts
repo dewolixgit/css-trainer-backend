@@ -1,13 +1,10 @@
 import { Column, ForeignKey, Model, Table } from 'sequelize-typescript';
-import {
-  InputFlowOnlyCode,
-  InputFlowOnlyCodeAttributes,
-} from '../inputFlowOnlyCode/inputFlowOnlyCode.model';
+import { InputFlowOnlyCode } from '../inputFlowOnlyCode/inputFlowOnlyCode.model';
 import { User } from '../users/users.model';
 
 export type InputFlowOnlyCodeInputAttributes = Pick<
   InputFlowOnlyCodeInput,
-  'id' | 'value' | 'inputFlowId'
+  'id' | 'value' | 'inputFlowId' | 'userId'
 >;
 
 export type InputFlowOnlyCodeInputCreationAttributes = Omit<
@@ -17,7 +14,7 @@ export type InputFlowOnlyCodeInputCreationAttributes = Omit<
 
 @Table({ freezeTableName: true, timestamps: false })
 export class InputFlowOnlyCodeInput extends Model<
-  InputFlowOnlyCodeAttributes,
+  InputFlowOnlyCodeInputAttributes,
   InputFlowOnlyCodeInputCreationAttributes
 > {
   @Column({ primaryKey: true, autoIncrement: true })
@@ -32,5 +29,5 @@ export class InputFlowOnlyCodeInput extends Model<
 
   @Column
   @ForeignKey(() => User)
-  userId: number;
+  readonly userId: number;
 }

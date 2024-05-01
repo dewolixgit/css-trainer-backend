@@ -1,6 +1,7 @@
 import {
   Controller,
   Get,
+  Param,
   ParseIntPipe,
   Query,
   Req,
@@ -14,6 +15,8 @@ import {
   ToClientTopicDtoTypeEnum,
 } from '../topics/dto/ToClientTopic.dto';
 import { Topic } from '../topics/topics.model';
+import { TasksSet } from './tasksSets.model';
+import { TasksSetProgressAndTaskDetailsDto } from './dto/TasksSetProgressAndTaskDetails.dto';
 
 @Controller('tasks-sets')
 export class TasksSetsController {
@@ -41,5 +44,17 @@ export class TasksSetsController {
       completed: tasksSet.completed,
       type: ToClientTopicDtoTypeEnum.tasksSet,
     }));
+  }
+
+  @Get('progress/:id')
+  @UseGuards(JwtAuthGuard)
+  async getTasksSetProgressAndLastCompletedTask(
+    @Req() request: AuthenticatedRequest,
+    @Param('id', ParseIntPipe) id: TasksSet['id'],
+  ): Promise<TasksSetProgressAndTaskDetailsDto | null> {
+    return this._tasksSetsService.getTasksSetProgressAndLastCompletedTask({
+      tasksSetId: id,
+      userId: request.user.userId,
+    });
   }
 }
