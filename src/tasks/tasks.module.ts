@@ -21,6 +21,8 @@ import { InfoFlowCodeBlockService } from '../infoFlowCodeBlock/infoFlowCodeBlock
 import { InfoFlowImageBlockModule } from '../infoFlowImageBlock/infoFlowImageBlock.module';
 import { InfoFlowTextBlockModule } from '../infoFlowTextBlock/infoFlowTextBlock.module';
 import { InfoFlowCodeBlockModule } from '../infoFlowCodeBlock/infoFlowCodeBlock.module';
+import { PartCodeMixedRowModule } from '../partCodeMixedRow/partCodeMixedRow.module';
+import { PartCodeMixedRowService } from '../partCodeMixedRow/partCodeMixedRow.service';
 
 @Module({
   imports: [
@@ -38,6 +40,7 @@ import { InfoFlowCodeBlockModule } from '../infoFlowCodeBlock/infoFlowCodeBlock.
     InfoFlowTextBlockModule,
     InfoFlowCodeBlockModule,
     InputFlowOnlyCodeModule,
+    PartCodeMixedRowModule,
     PartCodeMixedRowTextElementModule,
     PartCodeMixedRowCodeElementModule,
   ],
@@ -47,6 +50,7 @@ import { InfoFlowCodeBlockModule } from '../infoFlowCodeBlock/infoFlowCodeBlock.
     InfoFlowTextBlockService,
     InfoFlowCodeBlockService,
     InputFlowOnlyCodeService,
+    PartCodeMixedRowService,
     PartCodeMixedRowTextElementService,
     PartCodeMixedRowCodeElementService,
   ],
@@ -56,6 +60,7 @@ import { InfoFlowCodeBlockModule } from '../infoFlowCodeBlock/infoFlowCodeBlock.
     InfoFlowImageBlockService,
     InfoFlowTextBlockService,
     InfoFlowCodeBlockService,
+    PartCodeMixedRowService,
     InputFlowOnlyCodeModule,
     PartCodeMixedRowTextElementService,
     PartCodeMixedRowCodeElementModule,
