@@ -76,10 +76,16 @@ export class TasksSetsService {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     params: { userId: User['id']; tasksSetId: TasksSet['id'] }, // Todo: Typing
   ): Promise<any> {
-    return this._tasksService.getAllInputFlowPartCodeBlocksWithUserInput({
+    return this._tasksService.getAllInputFlowDndOptionsWithUserInput({
       userId: params.userId,
-      taskId: 1,
+      inputFlowDndId: 2,
+      inputFlowDndInputId: 1,
     });
+
+    // return this._tasksService.getAllInputFlowPartCodeBlocksWithUserInput({
+    //   userId: params.userId,
+    //   taskId: 1,
+    // });
 
     // return this._tasksService.getAllPartCodeOnlyRowsWithUserInput({
     //   userId: params.userId,

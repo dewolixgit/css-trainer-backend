@@ -30,6 +30,10 @@ import { PartCodeMixedRowService } from '../partCodeMixedRow/partCodeMixedRow.se
 import { InputFlowPartCode } from '../inputFlowPartCode/inputFlowPartCode.model';
 import { PartCodeOnlyRowService } from '../partCodeOnlyRow/partCodeOnlyRow.service';
 import { InputFlowPartCodeService } from '../inputFlowPartCode/inputFlowPartCode.service';
+import { InputFlowDndOptionService } from '../inputFlowDndOption/inputFlowDndOption.service';
+import { InputFlowDndOptionDto } from './dto/InputFlowDnd.dto';
+import { InputFlowDndInput } from '../inputFlowDndInput/inputFlowDndInput.model';
+import { InputFlowDnd } from '../inputFlowDnd/inputFlowDnd.model';
 
 @Injectable()
 export class TasksService {
@@ -44,6 +48,7 @@ export class TasksService {
     private readonly _partCodeMixedRowService: PartCodeMixedRowService,
     private readonly _partCodeMixedRowTextElementService: PartCodeMixedRowTextElementService,
     private readonly _partCodeMixedRowCodeElementService: PartCodeMixedRowCodeElementService,
+    private readonly _inputFlowDndOptionService: InputFlowDndOptionService,
     @InjectModel(InfoFlowImageBlock)
     private readonly _infoFlowImageBlockModel: typeof InfoFlowImageBlock,
     @InjectModel(InfoFlowTextBlock)
@@ -135,6 +140,20 @@ export class TasksService {
   }): Promise<PartCodeMixedRowTextElementDto[]> {
     return this._partCodeMixedRowTextElementService.getAllPartCodeMixedTextElement(
       { rowId: params.rowId },
+    );
+  }
+
+  async getAllInputFlowDndOptionsWithUserInput(params: {
+    inputFlowDndId: InputFlowDnd['id'];
+    inputFlowDndInputId: InputFlowDndInput['id'];
+    userId: User['id'];
+  }): Promise<InputFlowDndOptionDto[]> {
+    return this._inputFlowDndOptionService.getAllInputFlowDndOptionsWithUserInput(
+      {
+        inputFlowDndId: params.inputFlowDndId,
+        inputFlowDndInputId: params.inputFlowDndInputId,
+        userId: params.userId,
+      },
     );
   }
 

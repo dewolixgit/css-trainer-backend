@@ -27,6 +27,8 @@ import { PartCodeOnlyRowModule } from '../partCodeOnlyRow/partCodeOnlyRow.module
 import { PartCodeOnlyRowService } from '../partCodeOnlyRow/partCodeOnlyRow.service';
 import { InputFlowPartCodeService } from '../inputFlowPartCode/inputFlowPartCode.service';
 import { InputFlowPartCodeModule } from '../inputFlowPartCode/inputFlowPartCode.module';
+import { InputFlowDndOptionModule } from '../inputFlowDndOption/inputFlowDndOption.module';
+import { InputFlowDndOptionService } from '../inputFlowDndOption/inputFlowDndOption.service';
 
 @Module({
   imports: [
@@ -49,6 +51,7 @@ import { InputFlowPartCodeModule } from '../inputFlowPartCode/inputFlowPartCode.
     PartCodeMixedRowModule,
     PartCodeMixedRowTextElementModule,
     PartCodeMixedRowCodeElementModule,
+    InputFlowDndOptionModule,
   ],
   providers: [
     TasksService,
@@ -61,6 +64,7 @@ import { InputFlowPartCodeModule } from '../inputFlowPartCode/inputFlowPartCode.
     PartCodeMixedRowService,
     PartCodeMixedRowTextElementService,
     PartCodeMixedRowCodeElementService,
+    InputFlowDndOptionService,
   ],
   exports: [
     TasksService,
@@ -74,6 +78,7 @@ import { InputFlowPartCodeModule } from '../inputFlowPartCode/inputFlowPartCode.
     PartCodeMixedRowService,
     PartCodeMixedRowTextElementService,
     PartCodeMixedRowCodeElementModule,
+    InputFlowDndOptionService,
   ],
 })
 export class TasksModule {}
