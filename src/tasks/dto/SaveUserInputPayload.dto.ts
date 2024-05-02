@@ -23,6 +23,9 @@ export const userInputTextTypes = [
 
 export class SaveUserInputPayloadDto {
   @IsInt()
+  taskId: number;
+
+  @IsInt()
   inputId: number;
 
   /**

@@ -25,6 +25,8 @@ import { TaskStatus } from '../taskStatus/taskStatus.model';
 import { TasksController } from './tasks.controller';
 import { PartCodeMixedRowCodeElementModule } from '../partCodeMixedRowCodeElement/partCodeMixedRowCodeElement.module';
 import { PartCodeMixedRowCodeElementService } from '../partCodeMixedRowCodeElement/partCodeMixedRowCodeElement.service';
+import { TasksSetsModule } from '../tasksSets/tasksSets.module';
+import { TasksSetsService } from '../tasksSets/tasksSets.service';
 
 @Module({
   imports: [

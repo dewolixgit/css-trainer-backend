@@ -28,6 +28,7 @@ import {
 import { HttpStatus } from '@nestjs/common/enums';
 import { PartCodeMixedRowCodeElementService } from '../partCodeMixedRowCodeElement/partCodeMixedRowCodeElement.service';
 import { PartCodeOnlyRowService } from '../partCodeOnlyRow/partCodeOnlyRow.service';
+import { TasksSetsService } from '../tasksSets/tasksSets.service';
 
 @Injectable()
 export class TasksService {
@@ -44,6 +45,10 @@ export class TasksService {
     @InjectModel(TaskStatus)
     private readonly _taskStatusModel: typeof TaskStatus,
   ) {}
+
+  async getByPk(id: Task['id']): Promise<Task | null> {
+    return await this._taskModel.findByPk(id);
+  }
 
   private async _getAllInfoFlowBlocks(params: {
     taskId: Task['id'];
@@ -179,16 +184,12 @@ export class TasksService {
     };
   }
 
-  async saveUserInput(params: {
+  private async _saveUserInputByType(params: {
+    inputType: UserInputTypeEnum;
     userId: User['id'];
     payload: SaveUserInputPayloadDto;
     // Todo: Typing
   }): ServicePromiseHttpResponse<any> {
-    // Todo: Check achievements
-    // Todo: Send task statuses
-    // Todo: Save complete state
-    // Todo: Not to save complete state if already completed
-
     if (params.payload.inputType === UserInputTypeEnum.inputFlowOnlyCode) {
       return await this._inputFlowOnlyCodeService.saveInputIfExists({
         userId: params.userId,
@@ -230,5 +231,94 @@ export class TasksService {
         message: `Unhandled input type: ${params.payload.inputType}`,
       },
     };
+  }
+
+  private async _saveCompleteState(params: {
+    userId: User['id'];
+    taskId: Task['id'];
+    completed: boolean;
+  }): ServicePromiseHttpResponse<{ task: Task }> {
+    const task = await this.getByPk(params.taskId);
+
+    if (!task) {
+      return {
+        isError: true,
+        data: {
+          code: HttpStatus.NOT_FOUND,
+          message: `Task with id ${params.taskId} not found`,
+        },
+      };
+    }
+
+    const [input] = await this._taskStatusModel.findOrCreate({
+      where: {
+        userId: params.userId,
+        taskId: params.taskId,
+      },
+    });
+
+    if (!input.completed) {
+      await input.update({
+        completed: params.completed,
+      });
+    }
+
+    return {
+      isError: false,
+      data: {
+        task,
+      },
+    };
+  }
+
+  /**
+   * There is no checking if the task has inputs we are editing
+   */
+  async saveUserInput(params: {
+    userId: User['id'];
+    payload: SaveUserInputPayloadDto;
+    // Todo: Typing
+  }): ServicePromiseHttpResponse<any> {
+    // Todo: Check achievements
+    // Todo: Send task statuses
+    // Todo: Parallel saving
+
+    const savingResult = await this._saveUserInputByType({
+      inputType: params.payload.inputType,
+      userId: params.userId,
+      payload: params.payload,
+    });
+
+    if (savingResult.isError) {
+      return savingResult;
+    }
+
+    const saveCompleteStateResult = await this._saveCompleteState({
+      taskId: params.payload.taskId,
+      userId: params.userId,
+      completed: params.payload.completed,
+    });
+
+    if (saveCompleteStateResult.isError) {
+      return saveCompleteStateResult;
+    }
+
+    if (params.payload.completed) {
+      const tasksStatuses = await this.getAllTasksProgressOrdered({
+        userId: params.userId,
+        tasksSetId: saveCompleteStateResult.data.task.tasksSetId,
+      });
+
+      return {
+        isError: false,
+        data: {
+          tasksStatuses,
+        },
+      };
+    }
+
+    // Check achievements
+
+    return savingResult;
   }
 }
