@@ -26,6 +26,7 @@ import {
   ServicePromiseResponse,
 } from '../types/ServiceResponse';
 import { HttpStatus } from '@nestjs/common/enums';
+import { PartCodeMixedRowCodeElementService } from '../partCodeMixedRowCodeElement/partCodeMixedRowCodeElement.service';
 
 @Injectable()
 export class TasksService {
@@ -35,6 +36,7 @@ export class TasksService {
     private readonly _infoFlowCodeBlockService: InfoFlowCodeBlockService,
     private readonly _inputFlowOnlyCodeService: InputFlowOnlyCodeService,
     private readonly _inputFlowPartCodeService: InputFlowPartCodeService,
+    private readonly _partCodeMixedRowCodeElementService: PartCodeMixedRowCodeElementService,
     private readonly _inputFlowDndService: InputFlowDndService,
     @InjectModel(Task) private readonly _taskModel: typeof Task,
     @InjectModel(TaskStatus)
@@ -194,10 +196,11 @@ export class TasksService {
     if (
       params.payload.inputType === UserInputTypeEnum.partCodeMixedRowCodeElement
     ) {
-      return {
-        isError: false,
-        data: `go save ${UserInputTypeEnum.partCodeMixedRowCodeElement}`,
-      };
+      return await this._partCodeMixedRowCodeElementService.saveInputIfExists({
+        userId: params.userId,
+        rowElementId: params.payload.inputId,
+        value: params.payload.value ?? '',
+      });
     }
 
     if (params.payload.inputType === UserInputTypeEnum.inputFlowDnd) {

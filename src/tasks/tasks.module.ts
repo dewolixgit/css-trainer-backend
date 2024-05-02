@@ -23,6 +23,8 @@ import { InputFlowDndService } from '../inputFlowDnd/inputFlowDnd.service';
 import { Task } from './tasks.model';
 import { TaskStatus } from '../taskStatus/taskStatus.model';
 import { TasksController } from './tasks.controller';
+import { PartCodeMixedRowCodeElementModule } from '../partCodeMixedRowCodeElement/partCodeMixedRowCodeElement.module';
+import { PartCodeMixedRowCodeElementService } from '../partCodeMixedRowCodeElement/partCodeMixedRowCodeElement.service';
 
 @Module({
   imports: [
@@ -40,6 +42,7 @@ import { TasksController } from './tasks.controller';
     InfoFlowCodeBlockModule,
     InputFlowOnlyCodeModule,
     InputFlowPartCodeModule,
+    PartCodeMixedRowCodeElementModule,
     PartCodeOnlyRowModule,
     InputFlowDndModule,
   ],
@@ -51,6 +54,7 @@ import { TasksController } from './tasks.controller';
     InfoFlowCodeBlockService,
     InputFlowOnlyCodeService,
     InputFlowPartCodeService,
+    PartCodeMixedRowCodeElementService,
     PartCodeOnlyRowService,
     InputFlowDndService,
   ],
@@ -62,6 +66,7 @@ import { TasksController } from './tasks.controller';
     InfoFlowCodeBlockService,
     InputFlowOnlyCodeService,
     InputFlowPartCodeService,
+    PartCodeMixedRowCodeElementService,
     PartCodeOnlyRowService,
     InputFlowDndService,
   ],
