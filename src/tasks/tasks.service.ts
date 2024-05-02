@@ -27,6 +27,7 @@ import {
 } from '../types/ServiceResponse';
 import { HttpStatus } from '@nestjs/common/enums';
 import { PartCodeMixedRowCodeElementService } from '../partCodeMixedRowCodeElement/partCodeMixedRowCodeElement.service';
+import { PartCodeOnlyRowService } from '../partCodeOnlyRow/partCodeOnlyRow.service';
 
 @Injectable()
 export class TasksService {
@@ -37,6 +38,7 @@ export class TasksService {
     private readonly _inputFlowOnlyCodeService: InputFlowOnlyCodeService,
     private readonly _inputFlowPartCodeService: InputFlowPartCodeService,
     private readonly _partCodeMixedRowCodeElementService: PartCodeMixedRowCodeElementService,
+    private readonly _partCodeOnlyRowService: PartCodeOnlyRowService,
     private readonly _inputFlowDndService: InputFlowDndService,
     @InjectModel(Task) private readonly _taskModel: typeof Task,
     @InjectModel(TaskStatus)
@@ -160,7 +162,17 @@ export class TasksService {
       };
     }
 
-    // Todo: Validate dnd
+    if (
+      (params.payload.order === undefined ||
+        params.payload.order === null ||
+        !params.payload.order.length) &&
+      params.payload.inputType === UserInputTypeEnum.inputFlowDnd
+    ) {
+      return {
+        isError: true,
+        data: `Drag and drop options array is required when saving drag and drop input`,
+      };
+    }
 
     return {
       isError: false,
@@ -173,22 +185,22 @@ export class TasksService {
     // Todo: Typing
   }): ServicePromiseHttpResponse<any> {
     // Todo: Check achievements
-    // Todo: Save inputs
     // Todo: Send task statuses
     // Todo: Save complete state
     // Todo: Not to save complete state if already completed
 
     if (params.payload.inputType === UserInputTypeEnum.inputFlowOnlyCode) {
-      return {
-        isError: false,
-        data: `go save ${UserInputTypeEnum.inputFlowOnlyCode}`,
-      };
-    }
-
-    if (params.payload.inputType === UserInputTypeEnum.partCodeOnlyRow) {
       return await this._inputFlowOnlyCodeService.saveInputIfExists({
         userId: params.userId,
         inputFlowId: params.payload.inputId,
+        value: params.payload.value ?? '',
+      });
+    }
+
+    if (params.payload.inputType === UserInputTypeEnum.partCodeOnlyRow) {
+      return await this._partCodeOnlyRowService.saveInputIfExists({
+        userId: params.userId,
+        rowId: params.payload.inputId,
         value: params.payload.value ?? '',
       });
     }
@@ -204,10 +216,11 @@ export class TasksService {
     }
 
     if (params.payload.inputType === UserInputTypeEnum.inputFlowDnd) {
-      return {
-        isError: false,
-        data: `go save ${UserInputTypeEnum.inputFlowDnd}`,
-      };
+      return this._inputFlowDndService.saveInputIfExists({
+        userId: params.userId,
+        dndInputFlowId: params.payload.inputId,
+        order: params.payload.order ?? [],
+      });
     }
 
     return {

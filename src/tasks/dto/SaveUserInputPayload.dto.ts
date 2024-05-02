@@ -1,5 +1,12 @@
 import { InputFlowDndOption } from '../../inputFlowDndOption/inputFlowDndOption.model';
-import { IsBoolean, IsIn, IsInt, IsOptional, IsString } from 'class-validator';
+import {
+  IsArray,
+  IsBoolean,
+  IsIn,
+  IsInt,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export enum UserInputTypeEnum {
   partCodeMixedRowCodeElement = 'part-code-mixed-row-code-element',
@@ -33,7 +40,8 @@ export class SaveUserInputPayloadDto {
    * If we save dnd input, a client must send dnd options in the order they have to be saved
    */
   @IsOptional()
-  @IsInt()
+  @IsArray()
+  @IsInt({ each: true })
   order?: InputFlowDndOption['id'][];
 
   /**

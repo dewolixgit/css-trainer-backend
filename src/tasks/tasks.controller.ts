@@ -21,11 +21,10 @@ export class TasksController {
   @Post('save-input')
   @UseGuards(JwtAuthGuard)
   @UsePipes(ValidationPipe)
-  // Todo: Use body
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async saveUserInput(
     @Req() request: AuthenticatedRequest,
     @Body() body: SaveUserInputPayloadDto,
+    // Todo: Typing
   ): Promise<any> {
     const inputValidation = await this._tasksService.validateSaveUserInput({
       payload: body,
@@ -34,8 +33,6 @@ export class TasksController {
     if (inputValidation.isError) {
       throw new BadRequestException(inputValidation.data);
     }
-
-    // Todo: Validate dnd options
 
     const savingResult = await this._tasksService.saveUserInput({
       userId: request.user.userId,
