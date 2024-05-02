@@ -22,6 +22,7 @@ import { InputFlowDndModule } from '../inputFlowDnd/inputFlowDnd.module';
 import { InputFlowDndService } from '../inputFlowDnd/inputFlowDnd.service';
 import { Task } from './tasks.model';
 import { TaskStatus } from '../taskStatus/taskStatus.model';
+import { TasksController } from './tasks.controller';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { TaskStatus } from '../taskStatus/taskStatus.model';
     PartCodeOnlyRowModule,
     InputFlowDndModule,
   ],
+  controllers: [TasksController],
   providers: [
     TasksService,
     InfoFlowImageBlockService,

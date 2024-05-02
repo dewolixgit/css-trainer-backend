@@ -9,6 +9,9 @@ import {
   ContentFlowBlockType,
   InputFlowBlockType,
 } from '../tasks/dto/contentFlowBlock';
+import { UserInputTypeEnum } from '../tasks/dto/SaveUserInputPayload.dto';
+import { ServicePromiseHttpResponse } from '../types/ServiceResponse';
+import { HttpStatus } from '@nestjs/common/enums';
 
 @Injectable()
 export class InputFlowOnlyCodeService {
@@ -59,5 +62,81 @@ export class InputFlowOnlyCodeService {
       }));
 
     return inputFlowOnlyCodeWithUserInput;
+  }
+
+  async getByPrimaryKey(
+    inputFlowId: InputFlowOnlyCode['id'],
+  ): Promise<InputFlowOnlyCode | null> {
+    return await this._inputFlowOnlyCodeModel.findByPk(inputFlowId);
+  }
+
+  /**
+   * @return false if error, true if success
+   */
+  async saveInput(params: {
+    inputFlowId: InputFlowOnlyCode['id'];
+    userId: User['id'];
+    value: string;
+  }): Promise<boolean> {
+    const input = await this._inputFlowOnlyCodeInputModel.findOne({
+      where: {
+        userId: params.userId,
+        inputFlowId: params.inputFlowId,
+      },
+    });
+
+    if (!input) {
+      const created = await this._inputFlowOnlyCodeInputModel.create({
+        userId: params.userId,
+        inputFlowId: params.inputFlowId,
+        value: params.value,
+      });
+
+      return !!created;
+    }
+
+    await input.update({
+      value: params.value,
+    });
+
+    return true;
+  }
+
+  async saveInputIfExists(params: {
+    inputFlowId: InputFlowOnlyCode['id'];
+    userId: User['id'];
+    value: string;
+  }): ServicePromiseHttpResponse {
+    const input = await this.getByPrimaryKey(params.inputFlowId);
+
+    if (!input) {
+      return {
+        isError: true,
+        data: {
+          code: HttpStatus.NOT_FOUND,
+          message: `Input with id ${params.inputFlowId} not found`,
+        },
+      };
+    }
+
+    const result = await this.saveInput({
+      userId: params.userId,
+      inputFlowId: params.inputFlowId,
+      value: params.value ?? '',
+    });
+
+    if (!result) {
+      return {
+        isError: true,
+        data: {
+          code: HttpStatus.INTERNAL_SERVER_ERROR,
+          message: `Error saving input with id ${params.inputFlowId}, type ${UserInputTypeEnum.partCodeOnlyRow}`,
+        },
+      };
+    }
+
+    return {
+      isError: false,
+    };
   }
 }

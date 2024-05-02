@@ -16,6 +16,16 @@ import { InputFlowDndService } from '../inputFlowDnd/inputFlowDnd.service';
 import { TasksSet } from '../tasksSets/tasksSets.model';
 import { TaskOfSetProgressDto } from '../tasksSets/dto/TaskOfSetProgress.dto';
 import { TaskStatus } from '../taskStatus/taskStatus.model';
+import {
+  SaveUserInputPayloadDto,
+  userInputTextTypes,
+  UserInputTypeEnum,
+} from './dto/SaveUserInputPayload.dto';
+import {
+  ServicePromiseHttpResponse,
+  ServicePromiseResponse,
+} from '../types/ServiceResponse';
+import { HttpStatus } from '@nestjs/common/enums';
 
 @Injectable()
 export class TasksService {
@@ -133,5 +143,76 @@ export class TasksService {
     return (await Promise.all(getTasksWithProgressPromises)).sort(
       (task1, task2) => task1.order - task2.order,
     );
+  }
+
+  async validateSaveUserInput(params: {
+    payload: SaveUserInputPayloadDto;
+  }): ServicePromiseResponse<undefined, string> {
+    if (
+      (params.payload.value === undefined || params.payload.value === null) &&
+      userInputTextTypes.includes(params.payload.inputType)
+    ) {
+      return {
+        isError: true,
+        data: `Input value is required when saving any of text inputs: ${userInputTextTypes.join(', ')}`,
+      };
+    }
+
+    // Todo: Validate dnd
+
+    return {
+      isError: false,
+    };
+  }
+
+  async saveUserInput(params: {
+    userId: User['id'];
+    payload: SaveUserInputPayloadDto;
+    // Todo: Typing
+  }): ServicePromiseHttpResponse<any> {
+    // Todo: Check achievements
+    // Todo: Save inputs
+    // Todo: Send task statuses
+    // Todo: Save complete state
+    // Todo: Not to save complete state if already completed
+
+    if (params.payload.inputType === UserInputTypeEnum.inputFlowOnlyCode) {
+      return {
+        isError: false,
+        data: `go save ${UserInputTypeEnum.inputFlowOnlyCode}`,
+      };
+    }
+
+    if (params.payload.inputType === UserInputTypeEnum.partCodeOnlyRow) {
+      return await this._inputFlowOnlyCodeService.saveInputIfExists({
+        userId: params.userId,
+        inputFlowId: params.payload.inputId,
+        value: params.payload.value ?? '',
+      });
+    }
+
+    if (
+      params.payload.inputType === UserInputTypeEnum.partCodeMixedRowCodeElement
+    ) {
+      return {
+        isError: false,
+        data: `go save ${UserInputTypeEnum.partCodeMixedRowCodeElement}`,
+      };
+    }
+
+    if (params.payload.inputType === UserInputTypeEnum.inputFlowDnd) {
+      return {
+        isError: false,
+        data: `go save ${UserInputTypeEnum.inputFlowDnd}`,
+      };
+    }
+
+    return {
+      isError: true,
+      data: {
+        code: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: `Unhandled input type: ${params.payload.inputType}`,
+      },
+    };
   }
 }

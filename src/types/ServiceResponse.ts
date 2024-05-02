@@ -1,3 +1,5 @@
+import { ErrorHttpStatusCode } from '@nestjs/common/utils/http-error-by-code.util';
+
 export type ServiceResponse<D = undefined, E = undefined> =
   | (E extends undefined
       ? {
@@ -18,4 +20,12 @@ export type ServiceResponse<D = undefined, E = undefined> =
 
 export type ServicePromiseResponse<D = undefined, E = undefined> = Promise<
   ServiceResponse<D, E>
+>;
+
+export type ServicePromiseHttpResponse<D = undefined> = ServicePromiseResponse<
+  D,
+  {
+    code: ErrorHttpStatusCode;
+    message: string;
+  }
 >;
