@@ -22,11 +22,11 @@ export class TasksSetsService {
 
   async getAllWithProgress(params: {
     userId: User['id'];
-    topicId: Topic['id'] | null;
+    topicId?: Topic['id'] | null;
   }): Promise<TasksSetWithProgressDto[]> {
     const sets = await this._tasksSetsModel.findAll({
       include: [Task],
-      where: { topicId: params.topicId },
+      where: params.topicId ? { topicId: params.topicId } : undefined,
     });
 
     if (!sets.length) {
@@ -119,9 +119,10 @@ export class TasksSetsService {
     return tasksSetProgress[firstUncompletedTask];
   }
 
-  async getTasksSetProgressAndLastCompletedTask(
-    params: { userId: User['id']; tasksSetId: TasksSet['id'] }, // Todo: Typing
-  ): Promise<TasksSetProgressAndTaskDetailsDto | null> {
+  async getTasksSetProgressAndLastCompletedTask(params: {
+    userId: User['id'];
+    tasksSetId: TasksSet['id'];
+  }): Promise<TasksSetProgressAndTaskDetailsDto | null> {
     const tasksSetProgress = await this._getTasksSetProgressDto({
       userId: params.userId,
       tasksSetId: params.tasksSetId,

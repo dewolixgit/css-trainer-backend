@@ -18,7 +18,7 @@ export class UserAchievement extends Model<
   UserAchievementCreationAttributes
 > {
   @Column({ primaryKey: true, autoIncrement: true })
-  id: number;
+  readonly id: number;
 
   @Column
   @ForeignKey(() => User)

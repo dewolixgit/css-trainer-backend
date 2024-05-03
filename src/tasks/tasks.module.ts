@@ -22,6 +22,11 @@ import { InputFlowDndModule } from '../inputFlowDnd/inputFlowDnd.module';
 import { InputFlowDndService } from '../inputFlowDnd/inputFlowDnd.service';
 import { Task } from './tasks.model';
 import { TaskStatus } from '../taskStatus/taskStatus.model';
+import { TasksController } from './tasks.controller';
+import { PartCodeMixedRowCodeElementModule } from '../partCodeMixedRowCodeElement/partCodeMixedRowCodeElement.module';
+import { PartCodeMixedRowCodeElementService } from '../partCodeMixedRowCodeElement/partCodeMixedRowCodeElement.service';
+import { AchievementsModule } from '../achievements/achievements.module';
+import { AchievementsService } from '../achievements/achievements.service';
 
 @Module({
   imports: [
@@ -34,25 +39,31 @@ import { TaskStatus } from '../taskStatus/taskStatus.model';
       PartCodeMixedRowCodeElement,
       PartCodeMixedRowCodeElementInput,
     ]),
+    AchievementsModule,
     InfoFlowImageBlockModule,
     InfoFlowTextBlockModule,
     InfoFlowCodeBlockModule,
     InputFlowOnlyCodeModule,
     InputFlowPartCodeModule,
+    PartCodeMixedRowCodeElementModule,
     PartCodeOnlyRowModule,
     InputFlowDndModule,
   ],
+  controllers: [TasksController],
   providers: [
+    AchievementsService,
     TasksService,
     InfoFlowImageBlockService,
     InfoFlowTextBlockService,
     InfoFlowCodeBlockService,
     InputFlowOnlyCodeService,
     InputFlowPartCodeService,
+    PartCodeMixedRowCodeElementService,
     PartCodeOnlyRowService,
     InputFlowDndService,
   ],
   exports: [
+    AchievementsService,
     TasksService,
     SequelizeModule,
     InfoFlowImageBlockService,
@@ -60,6 +71,7 @@ import { TaskStatus } from '../taskStatus/taskStatus.model';
     InfoFlowCodeBlockService,
     InputFlowOnlyCodeService,
     InputFlowPartCodeService,
+    PartCodeMixedRowCodeElementService,
     PartCodeOnlyRowService,
     InputFlowDndService,
   ],

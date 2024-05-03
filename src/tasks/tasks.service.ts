@@ -16,20 +16,42 @@ import { InputFlowDndService } from '../inputFlowDnd/inputFlowDnd.service';
 import { TasksSet } from '../tasksSets/tasksSets.model';
 import { TaskOfSetProgressDto } from '../tasksSets/dto/TaskOfSetProgress.dto';
 import { TaskStatus } from '../taskStatus/taskStatus.model';
+import {
+  SaveUserInputItemPayloadDto,
+  SaveUserInputPayloadDto,
+  SaveUserInputResponseDto,
+  userInputTextTypes,
+  UserInputTypeEnum,
+} from './dto/SaveUserInputPayload.dto';
+import {
+  ServicePromiseHttpResponse,
+  ServiceResponse,
+} from '../types/ServiceResponse';
+import { HttpStatus } from '@nestjs/common/enums';
+import { PartCodeMixedRowCodeElementService } from '../partCodeMixedRowCodeElement/partCodeMixedRowCodeElement.service';
+import { PartCodeOnlyRowService } from '../partCodeOnlyRow/partCodeOnlyRow.service';
+import { AchievementsService } from '../achievements/achievements.service';
 
 @Injectable()
 export class TasksService {
   constructor(
+    private readonly _achievementService: AchievementsService,
     private readonly _infoFlowTextBlockService: InfoFlowTextBlockService,
     private readonly _infoFlowImageBlockService: InfoFlowImageBlockService,
     private readonly _infoFlowCodeBlockService: InfoFlowCodeBlockService,
     private readonly _inputFlowOnlyCodeService: InputFlowOnlyCodeService,
     private readonly _inputFlowPartCodeService: InputFlowPartCodeService,
+    private readonly _partCodeMixedRowCodeElementService: PartCodeMixedRowCodeElementService,
+    private readonly _partCodeOnlyRowService: PartCodeOnlyRowService,
     private readonly _inputFlowDndService: InputFlowDndService,
     @InjectModel(Task) private readonly _taskModel: typeof Task,
     @InjectModel(TaskStatus)
     private readonly _taskStatusModel: typeof TaskStatus,
   ) {}
+
+  async getByPk(id: Task['id']): Promise<Task | null> {
+    return await this._taskModel.findByPk(id);
+  }
 
   private async _getAllInfoFlowBlocks(params: {
     taskId: Task['id'];
@@ -133,5 +155,180 @@ export class TasksService {
     return (await Promise.all(getTasksWithProgressPromises)).sort(
       (task1, task2) => task1.order - task2.order,
     );
+  }
+
+  validateSaveUserInput(params: {
+    payload: SaveUserInputItemPayloadDto;
+  }): ServiceResponse<undefined, string> {
+    if (
+      (params.payload.value === undefined || params.payload.value === null) &&
+      userInputTextTypes.includes(params.payload.inputType)
+    ) {
+      return {
+        isError: true,
+        data: `Input value is required when saving any of text inputs: ${userInputTextTypes.join(', ')}`,
+      };
+    }
+
+    if (
+      (params.payload.order === undefined ||
+        params.payload.order === null ||
+        !params.payload.order.length) &&
+      params.payload.inputType === UserInputTypeEnum.inputFlowDnd
+    ) {
+      return {
+        isError: true,
+        data: `Drag and drop options array is required when saving drag and drop input`,
+      };
+    }
+
+    return {
+      isError: false,
+    };
+  }
+
+  private async _saveUserInputByType(params: {
+    inputType: UserInputTypeEnum;
+    userId: User['id'];
+    payload: SaveUserInputItemPayloadDto;
+  }): ServicePromiseHttpResponse {
+    if (params.payload.inputType === UserInputTypeEnum.inputFlowOnlyCode) {
+      return await this._inputFlowOnlyCodeService.saveInputIfExists({
+        userId: params.userId,
+        inputFlowId: params.payload.inputId,
+        value: params.payload.value ?? '',
+      });
+    }
+
+    if (params.payload.inputType === UserInputTypeEnum.partCodeOnlyRow) {
+      return await this._partCodeOnlyRowService.saveInputIfExists({
+        userId: params.userId,
+        rowId: params.payload.inputId,
+        value: params.payload.value ?? '',
+      });
+    }
+
+    if (
+      params.payload.inputType === UserInputTypeEnum.partCodeMixedRowCodeElement
+    ) {
+      return await this._partCodeMixedRowCodeElementService.saveInputIfExists({
+        userId: params.userId,
+        rowElementId: params.payload.inputId,
+        value: params.payload.value ?? '',
+      });
+    }
+
+    if (params.payload.inputType === UserInputTypeEnum.inputFlowDnd) {
+      return this._inputFlowDndService.saveInputIfExists({
+        userId: params.userId,
+        dndInputFlowId: params.payload.inputId,
+        order: params.payload.order ?? [],
+      });
+    }
+
+    return {
+      isError: true,
+      data: {
+        code: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: `Unhandled input type: ${params.payload.inputType}`,
+      },
+    };
+  }
+
+  private async _saveCompleteState(params: {
+    userId: User['id'];
+    taskId: Task['id'];
+    completed: boolean;
+  }): ServicePromiseHttpResponse<{ task: Task }> {
+    const task = await this.getByPk(params.taskId);
+
+    if (!task) {
+      return {
+        isError: true,
+        data: {
+          code: HttpStatus.NOT_FOUND,
+          message: `Task with id ${params.taskId} not found`,
+        },
+      };
+    }
+
+    const [input] = await this._taskStatusModel.findOrCreate({
+      where: {
+        userId: params.userId,
+        taskId: params.taskId,
+      },
+    });
+
+    if (!input.completed && params.completed) {
+      await input.update({
+        completed: params.completed,
+      });
+    }
+
+    return {
+      isError: false,
+      data: {
+        task,
+      },
+    };
+  }
+
+  /**
+   * There is no checking if the task has inputs we are editing
+   */
+  async saveUserInput(params: {
+    userId: User['id'];
+    payload: SaveUserInputPayloadDto;
+  }): ServicePromiseHttpResponse<undefined | SaveUserInputResponseDto> {
+    const savingResults = await Promise.all(
+      params.payload.inputItems.map((input) =>
+        this._saveUserInputByType({
+          inputType: input.inputType,
+          userId: params.userId,
+          payload: input,
+        }),
+      ),
+    );
+
+    const anySavingResultError = savingResults.find((result) => result.isError);
+
+    if (anySavingResultError && anySavingResultError.isError) {
+      return anySavingResultError;
+    }
+
+    if (params.payload.completedFirstly && params.payload.completed) {
+      const saveCompleteStateResult = await this._saveCompleteState({
+        taskId: params.payload.taskId,
+        userId: params.userId,
+        completed: params.payload.completed,
+      });
+
+      if (saveCompleteStateResult.isError) {
+        return saveCompleteStateResult;
+      }
+
+      const [achievementsToGet, tasksStatuses] = await Promise.all([
+        this._achievementService.checkAchievementsDto({
+          userId: params.userId,
+        }),
+        this.getAllTasksProgressOrdered({
+          userId: params.userId,
+          tasksSetId: saveCompleteStateResult.data.task.tasksSetId,
+        }),
+      ]);
+
+      return {
+        isError: false,
+        data: {
+          completed: true,
+          tasksStatuses,
+          achievements: achievementsToGet,
+        },
+      };
+    }
+
+    return {
+      isError: false,
+    };
   }
 }
