@@ -10,7 +10,10 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwtAuth.guard';
-import { SaveUserInputPayloadDto } from './dto/SaveUserInputPayload.dto';
+import {
+  SaveUserInputPayloadDto,
+  SaveUserInputResponseDto,
+} from './dto/SaveUserInputPayload.dto';
 import { TasksService } from './tasks.service';
 import { AuthenticatedRequest } from '../auth/types';
 
@@ -24,14 +27,17 @@ export class TasksController {
   async saveUserInput(
     @Req() request: AuthenticatedRequest,
     @Body() body: SaveUserInputPayloadDto,
-    // Todo: Typing
-  ): Promise<any> {
-    const inputValidation = await this._tasksService.validateSaveUserInput({
-      payload: body,
-    });
+  ): Promise<undefined | SaveUserInputResponseDto> {
+    const inputValidationResults = body.inputItems.map((input) =>
+      this._tasksService.validateSaveUserInput({ payload: input }),
+    );
 
-    if (inputValidation.isError) {
-      throw new BadRequestException(inputValidation.data);
+    const anyInputValidationError = inputValidationResults.find(
+      (result) => result.isError,
+    );
+
+    if (anyInputValidationError && anyInputValidationError.isError) {
+      throw new BadRequestException(anyInputValidationError.data);
     }
 
     const savingResult = await this._tasksService.saveUserInput({
@@ -49,7 +55,5 @@ export class TasksController {
     if ('data' in savingResult) {
       return savingResult.data;
     }
-
-    return 'success';
   }
 }

@@ -119,9 +119,10 @@ export class TasksSetsService {
     return tasksSetProgress[firstUncompletedTask];
   }
 
-  async getTasksSetProgressAndLastCompletedTask(
-    params: { userId: User['id']; tasksSetId: TasksSet['id'] }, // Todo: Typing
-  ): Promise<TasksSetProgressAndTaskDetailsDto | null> {
+  async getTasksSetProgressAndLastCompletedTask(params: {
+    userId: User['id'];
+    tasksSetId: TasksSet['id'];
+  }): Promise<TasksSetProgressAndTaskDetailsDto | null> {
     const tasksSetProgress = await this._getTasksSetProgressDto({
       userId: params.userId,
       tasksSetId: params.tasksSetId,

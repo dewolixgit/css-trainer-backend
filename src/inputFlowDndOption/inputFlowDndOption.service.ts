@@ -10,7 +10,6 @@ import { InputFlowDnd } from '../inputFlowDnd/inputFlowDnd.model';
 @Injectable()
 export class InputFlowDndOptionService {
   constructor(
-    // Todo: remove unused
     @InjectModel(InputFlowDndOption)
     private readonly _inputFlowDndOptionModel: typeof InputFlowDndOption,
     @InjectModel(InputFlowDndOptionInput)

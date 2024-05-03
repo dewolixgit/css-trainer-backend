@@ -6,7 +6,11 @@ import {
   IsInt,
   IsOptional,
   IsString,
+  ValidateNested,
 } from 'class-validator';
+import { Type } from 'class-transformer';
+import { AchievementStatusDto } from '../../achievements/dto/AchievementStatus.dto';
+import { TaskOfSetProgressDto } from '../../tasksSets/dto/TaskOfSetProgress.dto';
 
 export enum UserInputTypeEnum {
   partCodeMixedRowCodeElement = 'part-code-mixed-row-code-element',
@@ -21,10 +25,7 @@ export const userInputTextTypes = [
   UserInputTypeEnum.inputFlowOnlyCode,
 ];
 
-export class SaveUserInputPayloadDto {
-  @IsInt()
-  taskId: number;
-
+export class SaveUserInputItemPayloadDto {
   @IsInt()
   inputId: number;
 
@@ -53,6 +54,15 @@ export class SaveUserInputPayloadDto {
   @IsOptional()
   @IsString()
   value?: string;
+}
+
+export class SaveUserInputPayloadDto {
+  @IsInt()
+  taskId: number;
+
+  @ValidateNested({ each: true })
+  @Type(() => SaveUserInputItemPayloadDto)
+  inputItems: SaveUserInputItemPayloadDto[];
 
   /**
    * Result of checking if the task has been solved correctly
@@ -62,4 +72,10 @@ export class SaveUserInputPayloadDto {
 
   @IsBoolean()
   completedFirstly: boolean;
+}
+
+export class SaveUserInputResponseDto {
+  completed: boolean;
+  tasksStatuses: TaskOfSetProgressDto[];
+  achievements: AchievementStatusDto[];
 }

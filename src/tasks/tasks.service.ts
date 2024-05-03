@@ -17,13 +17,15 @@ import { TasksSet } from '../tasksSets/tasksSets.model';
 import { TaskOfSetProgressDto } from '../tasksSets/dto/TaskOfSetProgress.dto';
 import { TaskStatus } from '../taskStatus/taskStatus.model';
 import {
+  SaveUserInputItemPayloadDto,
   SaveUserInputPayloadDto,
+  SaveUserInputResponseDto,
   userInputTextTypes,
   UserInputTypeEnum,
 } from './dto/SaveUserInputPayload.dto';
 import {
   ServicePromiseHttpResponse,
-  ServicePromiseResponse,
+  ServiceResponse,
 } from '../types/ServiceResponse';
 import { HttpStatus } from '@nestjs/common/enums';
 import { PartCodeMixedRowCodeElementService } from '../partCodeMixedRowCodeElement/partCodeMixedRowCodeElement.service';
@@ -155,9 +157,9 @@ export class TasksService {
     );
   }
 
-  async validateSaveUserInput(params: {
-    payload: SaveUserInputPayloadDto;
-  }): ServicePromiseResponse<undefined, string> {
+  validateSaveUserInput(params: {
+    payload: SaveUserInputItemPayloadDto;
+  }): ServiceResponse<undefined, string> {
     if (
       (params.payload.value === undefined || params.payload.value === null) &&
       userInputTextTypes.includes(params.payload.inputType)
@@ -188,9 +190,8 @@ export class TasksService {
   private async _saveUserInputByType(params: {
     inputType: UserInputTypeEnum;
     userId: User['id'];
-    payload: SaveUserInputPayloadDto;
-    // Todo: Typing
-  }): ServicePromiseHttpResponse<any> {
+    payload: SaveUserInputItemPayloadDto;
+  }): ServicePromiseHttpResponse {
     if (params.payload.inputType === UserInputTypeEnum.inputFlowOnlyCode) {
       return await this._inputFlowOnlyCodeService.saveInputIfExists({
         userId: params.userId,
@@ -278,20 +279,21 @@ export class TasksService {
   async saveUserInput(params: {
     userId: User['id'];
     payload: SaveUserInputPayloadDto;
-    // Todo: Typing
-  }): ServicePromiseHttpResponse<any> {
-    // Todo: Check achievements
-    // Todo: Send task statuses
-    // Todo: Parallel saving
+  }): ServicePromiseHttpResponse<undefined | SaveUserInputResponseDto> {
+    const savingResults = await Promise.all(
+      params.payload.inputItems.map((input) =>
+        this._saveUserInputByType({
+          inputType: input.inputType,
+          userId: params.userId,
+          payload: input,
+        }),
+      ),
+    );
 
-    const savingResult = await this._saveUserInputByType({
-      inputType: params.payload.inputType,
-      userId: params.userId,
-      payload: params.payload,
-    });
+    const anySavingResultError = savingResults.find((result) => result.isError);
 
-    if (savingResult.isError) {
-      return savingResult;
+    if (anySavingResultError && anySavingResultError.isError) {
+      return anySavingResultError;
     }
 
     if (params.payload.completedFirstly && params.payload.completed) {
@@ -318,12 +320,15 @@ export class TasksService {
       return {
         isError: false,
         data: {
+          completed: true,
           tasksStatuses,
           achievements: achievementsToGet,
         },
       };
     }
 
-    return savingResult;
+    return {
+      isError: false,
+    };
   }
 }
