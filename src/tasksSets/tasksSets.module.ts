@@ -11,6 +11,6 @@ import { TasksModule } from '../tasks/tasks.module';
   imports: [SequelizeModule.forFeature([TasksSet, TaskStatus]), TasksModule],
   controllers: [TasksSetsController],
   providers: [TasksSetsService, TasksService],
-  exports: [TasksSetsService],
+  exports: [SequelizeModule, TasksSetsService, TasksService],
 })
 export class TasksSetsModule {}

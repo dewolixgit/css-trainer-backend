@@ -22,11 +22,11 @@ export class TasksSetsService {
 
   async getAllWithProgress(params: {
     userId: User['id'];
-    topicId: Topic['id'] | null;
+    topicId?: Topic['id'] | null;
   }): Promise<TasksSetWithProgressDto[]> {
     const sets = await this._tasksSetsModel.findAll({
       include: [Task],
-      where: { topicId: params.topicId },
+      where: params.topicId ? { topicId: params.topicId } : undefined,
     });
 
     if (!sets.length) {

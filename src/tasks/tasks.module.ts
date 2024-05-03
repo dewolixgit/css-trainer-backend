@@ -25,8 +25,8 @@ import { TaskStatus } from '../taskStatus/taskStatus.model';
 import { TasksController } from './tasks.controller';
 import { PartCodeMixedRowCodeElementModule } from '../partCodeMixedRowCodeElement/partCodeMixedRowCodeElement.module';
 import { PartCodeMixedRowCodeElementService } from '../partCodeMixedRowCodeElement/partCodeMixedRowCodeElement.service';
-import { TasksSetsModule } from '../tasksSets/tasksSets.module';
-import { TasksSetsService } from '../tasksSets/tasksSets.service';
+import { AchievementsModule } from '../achievements/achievements.module';
+import { AchievementsService } from '../achievements/achievements.service';
 
 @Module({
   imports: [
@@ -39,6 +39,7 @@ import { TasksSetsService } from '../tasksSets/tasksSets.service';
       PartCodeMixedRowCodeElement,
       PartCodeMixedRowCodeElementInput,
     ]),
+    AchievementsModule,
     InfoFlowImageBlockModule,
     InfoFlowTextBlockModule,
     InfoFlowCodeBlockModule,
@@ -50,6 +51,7 @@ import { TasksSetsService } from '../tasksSets/tasksSets.service';
   ],
   controllers: [TasksController],
   providers: [
+    AchievementsService,
     TasksService,
     InfoFlowImageBlockService,
     InfoFlowTextBlockService,
@@ -61,6 +63,7 @@ import { TasksSetsService } from '../tasksSets/tasksSets.service';
     InputFlowDndService,
   ],
   exports: [
+    AchievementsService,
     TasksService,
     SequelizeModule,
     InfoFlowImageBlockService,

@@ -59,4 +59,7 @@ export class SaveUserInputPayloadDto {
    */
   @IsBoolean()
   completed: boolean;
+
+  @IsBoolean()
+  completedFirstly: boolean;
 }

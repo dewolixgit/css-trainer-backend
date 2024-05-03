@@ -28,11 +28,12 @@ import {
 import { HttpStatus } from '@nestjs/common/enums';
 import { PartCodeMixedRowCodeElementService } from '../partCodeMixedRowCodeElement/partCodeMixedRowCodeElement.service';
 import { PartCodeOnlyRowService } from '../partCodeOnlyRow/partCodeOnlyRow.service';
-import { TasksSetsService } from '../tasksSets/tasksSets.service';
+import { AchievementsService } from '../achievements/achievements.service';
 
 @Injectable()
 export class TasksService {
   constructor(
+    private readonly _achievementService: AchievementsService,
     private readonly _infoFlowTextBlockService: InfoFlowTextBlockService,
     private readonly _infoFlowImageBlockService: InfoFlowImageBlockService,
     private readonly _infoFlowCodeBlockService: InfoFlowCodeBlockService,
@@ -257,7 +258,7 @@ export class TasksService {
       },
     });
 
-    if (!input.completed) {
+    if (!input.completed && params.completed) {
       await input.update({
         completed: params.completed,
       });
@@ -293,31 +294,35 @@ export class TasksService {
       return savingResult;
     }
 
-    const saveCompleteStateResult = await this._saveCompleteState({
-      taskId: params.payload.taskId,
-      userId: params.userId,
-      completed: params.payload.completed,
-    });
-
-    if (saveCompleteStateResult.isError) {
-      return saveCompleteStateResult;
-    }
-
-    if (params.payload.completed) {
-      const tasksStatuses = await this.getAllTasksProgressOrdered({
+    if (params.payload.completedFirstly && params.payload.completed) {
+      const saveCompleteStateResult = await this._saveCompleteState({
+        taskId: params.payload.taskId,
         userId: params.userId,
-        tasksSetId: saveCompleteStateResult.data.task.tasksSetId,
+        completed: params.payload.completed,
       });
+
+      if (saveCompleteStateResult.isError) {
+        return saveCompleteStateResult;
+      }
+
+      const [achievementsToGet, tasksStatuses] = await Promise.all([
+        this._achievementService.checkAchievementsDto({
+          userId: params.userId,
+        }),
+        this.getAllTasksProgressOrdered({
+          userId: params.userId,
+          tasksSetId: saveCompleteStateResult.data.task.tasksSetId,
+        }),
+      ]);
 
       return {
         isError: false,
         data: {
           tasksStatuses,
+          achievements: achievementsToGet,
         },
       };
     }
-
-    // Check achievements
 
     return savingResult;
   }

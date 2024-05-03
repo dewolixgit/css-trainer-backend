@@ -18,6 +18,11 @@ import { PartCodeOnlyRowModule } from '../partCodeOnlyRow/partCodeOnlyRow.module
     PartCodeMixedRowService,
     PartCodeOnlyRowService,
   ],
-  exports: [SequelizeModule, InputFlowPartCodeService, PartCodeMixedRowService],
+  exports: [
+    SequelizeModule,
+    InputFlowPartCodeService,
+    PartCodeMixedRowService,
+    PartCodeOnlyRowService,
+  ],
 })
 export class InputFlowPartCodeModule {}
