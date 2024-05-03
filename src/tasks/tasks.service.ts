@@ -116,6 +116,29 @@ export class TasksService {
       .sort((block1, block2) => block1.order - block2.order);
   }
 
+  async getTasksSections(params: {
+    userId: User['id'];
+    taskId: Task['id'];
+  }): Promise<{
+    theory: InfoFlowBlocksDtoUnion[];
+    practice: ContentFlowBlocksDtoUnion[];
+  }> {
+    const [theory, practice] = await Promise.all([
+      this.getAllTheorySectionFlowBlocks({
+        taskId: params.taskId,
+      }),
+      this.getAllPracticeSectionFlowBlocks({
+        taskId: params.taskId,
+        userId: params.userId,
+      }),
+    ]);
+
+    return {
+      practice,
+      theory,
+    };
+  }
+
   async getAllTasksProgressOrdered(params: {
     userId: User['id'];
     tasksSetId: TasksSet['id'];

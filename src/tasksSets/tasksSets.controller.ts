@@ -17,6 +17,7 @@ import {
 import { Topic } from '../topics/topics.model';
 import { TasksSet } from './tasksSets.model';
 import { TasksSetProgressAndTaskDetailsDto } from './dto/TasksSetProgressAndTaskDetails.dto';
+import { Task } from '../tasks/tasks.model';
 
 @Controller('tasks-sets')
 export class TasksSetsController {
@@ -48,13 +49,15 @@ export class TasksSetsController {
 
   @Get('progress/:id')
   @UseGuards(JwtAuthGuard)
-  async getTasksSetProgressAndLastCompletedTask(
+  async getTasksSetProgressAndTaskContent(
     @Req() request: AuthenticatedRequest,
     @Param('id', ParseIntPipe) id: TasksSet['id'],
+    @Query('task-id', new ParseIntPipe({ optional: true })) taskId?: Task['id'],
   ): Promise<TasksSetProgressAndTaskDetailsDto | null> {
-    return this._tasksSetsService.getTasksSetProgressAndLastCompletedTask({
+    return this._tasksSetsService.getTasksSetProgressAndTaskContent({
       tasksSetId: id,
       userId: request.user.userId,
+      taskIdToOpen: taskId,
     });
   }
 }

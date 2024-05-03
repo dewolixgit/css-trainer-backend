@@ -119,9 +119,10 @@ export class TasksSetsService {
     return tasksSetProgress[firstUncompletedTask];
   }
 
-  async getTasksSetProgressAndLastCompletedTask(params: {
+  async getTasksSetProgressAndTaskContent(params: {
     userId: User['id'];
     tasksSetId: TasksSet['id'];
+    taskIdToOpen?: Task['id'];
   }): Promise<TasksSetProgressAndTaskDetailsDto | null> {
     const tasksSetProgress = await this._getTasksSetProgressDto({
       userId: params.userId,
@@ -140,31 +141,34 @@ export class TasksSetsService {
       };
     }
 
-    const taskToOpen = this._getTaskToOpenWithinTasksWithProgress(
-      tasksSetProgress.tasksStatus,
-    );
+    const taskToOpen = params.taskIdToOpen
+      ? tasksSetProgress.tasksStatus.find(
+          (task) => task.data.id === params.taskIdToOpen,
+        )
+      : this._getTaskToOpenWithinTasksWithProgress(
+          tasksSetProgress.tasksStatus,
+        );
 
-    const getTaskSectionsPromises = [
-      this._tasksService.getAllTheorySectionFlowBlocks({
-        taskId: taskToOpen.data.id,
-      }),
-      this._tasksService.getAllPracticeSectionFlowBlocks({
-        taskId: taskToOpen.data.id,
-        userId: params.userId,
-      }),
-    ] as const;
+    if (!taskToOpen) {
+      return {
+        tasksSetStatus: tasksSetProgress,
+        theory: null,
+        practice: null,
+      };
+    }
 
-    const [taskTheory, taskPractice] = await Promise.all(
-      getTaskSectionsPromises,
-    );
+    const sections = await this._tasksService.getTasksSections({
+      userId: params.userId,
+      taskId: taskToOpen.data.id,
+    });
 
     return {
       tasksSetStatus: tasksSetProgress,
       theory: {
-        content: taskTheory,
+        content: sections.theory,
       },
       practice: {
-        content: taskPractice,
+        content: sections.practice,
         task: taskToOpen,
       },
     };
