@@ -16,6 +16,17 @@ export class InputFlowDndOptionService {
     private readonly _inputFlowDndOptionInputModel: typeof InputFlowDndOptionInput,
   ) {}
 
+  private _toInputFlowDndOptionDto(params: {
+    option: InputFlowDndOption;
+    userOrder?: number;
+  }): InputFlowDndOptionDto {
+    return {
+      id: params.option.id,
+      code: params.option.code,
+      order: params.userOrder ?? params.option.initialOrder,
+    };
+  }
+
   /**
    * @param params.optionInputs Option inputs to update
    * @param params.order New order of corresponding options. Values of the array are ids of the options
@@ -80,11 +91,17 @@ export class InputFlowDndOptionService {
       await this.getAllInputFlowDndOptionModels({
         inputFlowDndId: params.inputFlowDndId,
       })
-    ).map((option) => ({
-      id: option.id,
-      code: option.code,
-      order: option.initialOrder,
-    }));
+    ).map((option) => this._toInputFlowDndOptionDto({ option }));
+  }
+
+  async getAllInputFlowDndOptionsOrdered(params: {
+    inputFlowDndId: InputFlowDnd['id'];
+  }): Promise<InputFlowDndOptionDto[]> {
+    return (
+      await this.getAllInputFlowDndOptions({
+        inputFlowDndId: params.inputFlowDndId,
+      })
+    ).sort((a, b) => a.order - b.order);
   }
 
   async getAllInputFlowDndOptionsWithUserInput(params: {
@@ -92,10 +109,8 @@ export class InputFlowDndOptionService {
     inputFlowDndInputId: InputFlowDndInput['id'];
     userId: User['id'];
   }): Promise<InputFlowDndOptionDto[]> {
-    const options = await this._inputFlowDndOptionModel.findAll({
-      where: {
-        inputFlowDndId: params.inputFlowDndId,
-      },
+    const options = await this.getAllInputFlowDndOptionModels({
+      inputFlowDndId: params.inputFlowDndId,
     });
 
     if (!options.length) {
@@ -113,12 +128,13 @@ export class InputFlowDndOptionService {
 
     const optionInputs = await Promise.all(getOptionInputsPromises);
 
-    return options.map((option) => ({
-      id: option.id,
-      code: option.code,
-      order:
-        optionInputs.find((input) => input?.optionId === option.id)?.order ??
-        option.initialOrder,
-    }));
+    return options.map((option) =>
+      this._toInputFlowDndOptionDto({
+        option,
+        userOrder:
+          optionInputs.find((input) => input?.optionId === option.id)?.order ??
+          option.initialOrder,
+      }),
+    );
   }
 }

@@ -21,9 +21,22 @@ export class PartCodeMixedRowCodeElementService {
     private readonly _partCodeMixedRowCodeElementInputModel: typeof PartCodeMixedRowCodeElementInput,
   ) {}
 
+  private _toPartCodeMixedRowCodeElementDto(params: {
+    partCodeMixedRowCodeElement: PartCodeMixedRowCodeElement;
+    value?: string;
+  }): PartCodeMixedRowCodeElementDto {
+    return {
+      id: params.partCodeMixedRowCodeElement.id,
+      type: PartCodeMixedRowElementType.code,
+      order: params.partCodeMixedRowCodeElement.order,
+      symbolsLength: params.partCodeMixedRowCodeElement.symbolsLength,
+      value: params.value ?? '',
+    };
+  }
+
   async getAllPartCodeMixedRowCodeElementsWithUserInput(params: {
     rowId: PartCodeMixedRow['id'];
-    userId: User['id'];
+    userId: User['id'] | null;
   }): Promise<PartCodeMixedRowCodeElementDto[]> {
     const partCodeMixedRowCodeElements =
       await this._partCodeMixedRowCodeElementModel.findAll({
@@ -36,12 +49,22 @@ export class PartCodeMixedRowCodeElementService {
       return [];
     }
 
+    const userId = params.userId;
+
+    if (!userId) {
+      return partCodeMixedRowCodeElements.map((partCodeMixedRowCodeElement) =>
+        this._toPartCodeMixedRowCodeElementDto({
+          partCodeMixedRowCodeElement,
+        }),
+      );
+    }
+
     const getPartCodeMixedRowCodeElementInputPromises =
       partCodeMixedRowCodeElements.map(
         async (codeElement): Promise<PartCodeMixedRowCodeElementInput | null> =>
           this._partCodeMixedRowCodeElementInputModel.findOne({
             where: {
-              userId: params.userId,
+              userId,
               rowElementId: codeElement.id,
             },
           }),
@@ -51,21 +74,16 @@ export class PartCodeMixedRowCodeElementService {
       getPartCodeMixedRowCodeElementInputPromises,
     );
 
-    const partCodeMixedRowCodeElementWithUserInput =
-      partCodeMixedRowCodeElements.map<PartCodeMixedRowCodeElementDto>(
-        (codeElement) => ({
-          id: codeElement.id,
-          type: PartCodeMixedRowElementType.code,
-          order: codeElement.order,
-          symbolsLength: codeElement.symbolsLength,
-          value:
-            partCodeMixedRowCodeElementInput.find(
-              (input) => input && input.rowElementId === codeElement.id,
-            )?.value ?? '',
-        }),
-      );
-
-    return partCodeMixedRowCodeElementWithUserInput;
+    return partCodeMixedRowCodeElements.map((partCodeMixedRowCodeElement) =>
+      this._toPartCodeMixedRowCodeElementDto({
+        partCodeMixedRowCodeElement,
+        value:
+          partCodeMixedRowCodeElementInput.find(
+            (input) =>
+              input && input.rowElementId === partCodeMixedRowCodeElement.id,
+          )?.value ?? '',
+      }),
+    );
   }
 
   async getByPrimaryKey(

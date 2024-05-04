@@ -22,9 +22,23 @@ export class InputFlowOnlyCodeService {
     private readonly _inputFlowOnlyCodeInputModel: typeof InputFlowOnlyCodeInput,
   ) {}
 
+  private _toInputFlowOnlyCodeDto(params: {
+    inputFlowOnlyCode: InputFlowOnlyCode;
+    value?: string;
+  }): InputFlowOnlyCodeDto {
+    return {
+      id: params.inputFlowOnlyCode.id,
+      contentType: ContentFlowBlockType.input,
+      inputType: InputFlowBlockType.textArea,
+      order: params.inputFlowOnlyCode.order,
+      linesCount: params.inputFlowOnlyCode.linesHeight,
+      value: params.value ?? '',
+    };
+  }
+
   async getAllInputFlowOnlyCodeBlocksWithUserInput(params: {
     taskId: Task['id'];
-    userId: User['id'];
+    userId: User['id'] | null;
   }): Promise<InputFlowOnlyCodeDto[]> {
     const inputFlowOnlyCodeBlocks = await this._inputFlowOnlyCodeModel.findAll({
       where: { taskId: params.taskId },
@@ -34,11 +48,19 @@ export class InputFlowOnlyCodeService {
       return [];
     }
 
+    const userId = params.userId;
+
+    if (!userId) {
+      return inputFlowOnlyCodeBlocks.map((inputFlowOnlyCode) =>
+        this._toInputFlowOnlyCodeDto({ inputFlowOnlyCode }),
+      );
+    }
+
     const getInputFlowOnlyCodeInputPromises = inputFlowOnlyCodeBlocks.map(
       async (flowOnlyCodeBlock): Promise<InputFlowOnlyCodeInput | null> =>
         this._inputFlowOnlyCodeInputModel.findOne({
           where: {
-            userId: params.userId,
+            userId,
             inputFlowId: flowOnlyCodeBlock.id,
           },
         }),
@@ -48,20 +70,15 @@ export class InputFlowOnlyCodeService {
       getInputFlowOnlyCodeInputPromises,
     );
 
-    const inputFlowOnlyCodeWithUserInput =
-      inputFlowOnlyCodeBlocks.map<InputFlowOnlyCodeDto>((inputFlowBlock) => ({
-        id: inputFlowBlock.id,
-        contentType: ContentFlowBlockType.input,
-        inputType: InputFlowBlockType.textArea,
-        order: inputFlowBlock.order,
-        linesCount: inputFlowBlock.linesHeight,
+    return inputFlowOnlyCodeBlocks.map((inputFlowOnlyCode) =>
+      this._toInputFlowOnlyCodeDto({
+        inputFlowOnlyCode,
         value:
           inputFlowOnlyCodeInput.find(
-            (input) => input && input.inputFlowId === inputFlowBlock.id,
+            (input) => input && input.inputFlowId === inputFlowOnlyCode.id,
           )?.value ?? '',
-      }));
-
-    return inputFlowOnlyCodeWithUserInput;
+      }),
+    );
   }
 
   async getByPrimaryKey(

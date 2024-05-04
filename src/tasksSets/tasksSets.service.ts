@@ -1,4 +1,5 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { HttpStatus } from '@nestjs/common/enums';
+import { forwardRef, Inject, Injectable, HttpException } from '@nestjs/common';
 import { TasksSet } from './tasksSets.model';
 import { InjectModel } from '@nestjs/sequelize';
 import { User } from '../users/users.model';
@@ -10,6 +11,7 @@ import { TasksService } from '../tasks/tasks.service';
 import { TaskOfSetProgressDto } from './dto/TaskOfSetProgress.dto';
 import { TasksSetProgressAndTaskDetailsDto } from './dto/TasksSetProgressAndTaskDetails.dto';
 import { TasksSetProgressDto } from './dto/TasksSetProgress.dto';
+import { TRIAL_TASKS_SET_ID } from './config';
 
 @Injectable()
 export class TasksSetsService {
@@ -75,7 +77,7 @@ export class TasksSetsService {
   }
 
   private async _getTasksSetProgressDto(params: {
-    userId: User['id'];
+    userId: User['id'] | null;
     tasksSetId: TasksSet['id'];
   }): Promise<TasksSetProgressDto | null> {
     const tasksSet = await this._tasksSetsModel.findOne({
@@ -160,6 +162,60 @@ export class TasksSetsService {
 
     const sections = await this._tasksService.getTasksSections({
       userId: params.userId,
+      taskId: taskToOpen.data.id,
+    });
+
+    return {
+      tasksSetStatus: tasksSetProgress,
+      theory: {
+        content: sections.theory,
+      },
+      practice: {
+        content: sections.practice,
+        task: taskToOpen,
+      },
+    };
+  }
+
+  async getTrialTasksSetProgressAndTaskContent(params: {
+    taskIdToOpen?: Task['id'];
+  }): Promise<TasksSetProgressAndTaskDetailsDto | null> {
+    const tasksSetProgress = await this._getTasksSetProgressDto({
+      userId: null,
+      tasksSetId: TRIAL_TASKS_SET_ID,
+    });
+
+    if (!tasksSetProgress) {
+      throw new HttpException(
+        'The trial tasks set not found',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+
+    if (!tasksSetProgress.tasksStatus.length) {
+      return {
+        tasksSetStatus: tasksSetProgress,
+        theory: null,
+        practice: null,
+      };
+    }
+
+    const taskToOpen = params.taskIdToOpen
+      ? tasksSetProgress.tasksStatus.find(
+          (task) => task.data.id === params.taskIdToOpen,
+        )
+      : tasksSetProgress.tasksStatus[0];
+
+    if (!taskToOpen) {
+      return {
+        tasksSetStatus: tasksSetProgress,
+        theory: null,
+        practice: null,
+      };
+    }
+
+    const sections = await this._tasksService.getTasksSections({
+      userId: null,
       taskId: taskToOpen.data.id,
     });
 

@@ -22,7 +22,7 @@ export class PartCodeMixedRowService {
 
   async getMixedRowByPkWithUserInputOrdered(params: {
     rowId: PartCodeMixedRow['id'];
-    userId: User['id'];
+    userId: User['id'] | null;
   }): Promise<PartCodeMixedRowDto | null> {
     const row = await this._partCodeMixedRowModel.findByPk(params.rowId);
 
@@ -55,7 +55,7 @@ export class PartCodeMixedRowService {
   }
 
   async getAllPartCodeMixedRowsWithUserInput(params: {
-    userId: User['id'];
+    userId: User['id'] | null;
     inputFlowPartCodeId: InputFlowPartCode['id'];
   }): Promise<PartCodeMixedRowDto[]> {
     const allRows = await this._partCodeMixedRowModel.findAll({

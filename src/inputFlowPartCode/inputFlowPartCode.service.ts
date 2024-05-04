@@ -23,7 +23,7 @@ export class InputFlowPartCodeService {
 
   async getInputFlowPartCodeByPkWithUserInputOrdered(params: {
     inputFlowPartCodeId: InputFlowPartCode['id'];
-    userId: User['id'];
+    userId: User['id'] | null;
   }): Promise<InputFlowPartCodeDto | null> {
     const inputFlowPartCode = await this._inputFlowPartCodeModel.findByPk(
       params.inputFlowPartCodeId,
@@ -62,7 +62,7 @@ export class InputFlowPartCodeService {
 
   async getAllInputFlowPartCodeWithUserInput(params: {
     taskId: Task['id'];
-    userId: User['id'];
+    userId: User['id'] | null;
   }): Promise<InputFlowPartCodeDto[]> {
     const inputFlowPartCodes = await this._inputFlowPartCodeModel.findAll({
       where: { taskId: params.taskId },
