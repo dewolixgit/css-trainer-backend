@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { TasksSet } from './tasksSets.model';
 import { InjectModel } from '@nestjs/sequelize';
 import { User } from '../users/users.model';
@@ -14,6 +14,7 @@ import { TasksSetProgressDto } from './dto/TasksSetProgress.dto';
 @Injectable()
 export class TasksSetsService {
   constructor(
+    @Inject(forwardRef(() => TasksService))
     private readonly _tasksService: TasksService,
     @InjectModel(TasksSet) private readonly _tasksSetsModel: typeof TasksSet,
     @InjectModel(TaskStatus)
