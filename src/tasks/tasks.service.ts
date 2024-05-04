@@ -50,6 +50,22 @@ export class TasksService {
     private readonly _taskStatusModel: typeof TaskStatus,
   ) {}
 
+  private _toTaskOfSetProgressDto(params: {
+    task: Task;
+    competed: boolean;
+  }): TaskOfSetProgressDto {
+    return {
+      data: {
+        id: params.task.id,
+        name: params.task.name,
+        skillTag: params.task.skill,
+        topicId: params.task.tasksSetId,
+      },
+      order: params.task.order,
+      completed: params.competed,
+    };
+  }
+
   async getByPk(id: Task['id']): Promise<Task | null> {
     return await this._taskModel.findByPk(id);
   }
@@ -137,7 +153,7 @@ export class TasksService {
 
   async getAllPracticeSectionFlowBlocks(params: {
     taskId: Task['id'];
-    userId: User['id'];
+    userId: User['id'] | null;
   }): Promise<ContentFlowBlocksDtoUnion[]> {
     const promises = [
       this._getAllInfoFlowBlocks({
@@ -166,7 +182,7 @@ export class TasksService {
   }
 
   async getTasksSections(params: {
-    userId: User['id'];
+    userId: User['id'] | null;
     taskId: Task['id'];
   }): Promise<{
     theory: InfoFlowBlocksDtoUnion[];
@@ -189,7 +205,7 @@ export class TasksService {
   }
 
   async getAllTasksProgressOrdered(params: {
-    userId: User['id'];
+    userId: User['id'] | null;
     tasksSetId: TasksSet['id'];
   }): Promise<TaskOfSetProgressDto[]> {
     const tasks = await this._taskModel.findAll({
@@ -202,26 +218,33 @@ export class TasksService {
       return [];
     }
 
+    const userId = params.userId;
+
+    if (!userId) {
+      return tasks
+        .map((task) =>
+          this._toTaskOfSetProgressDto({
+            task,
+            competed: false,
+          }),
+        )
+        .sort((task1, task2) => task1.order - task2.order);
+    }
+
     const getTasksWithProgressPromises = tasks.map<
       Promise<TaskOfSetProgressDto>
     >(async (task): Promise<TaskOfSetProgressDto> => {
       const taskProgress = await this._taskStatusModel.findOne({
         where: {
           taskId: task.id,
-          userId: params.userId,
+          userId,
         },
       });
 
-      return {
-        data: {
-          id: task.id,
-          skillTag: task.skill,
-          topicId: task.tasksSetId,
-          name: task.name,
-        },
-        order: task.order,
-        completed: taskProgress?.completed ?? false,
-      };
+      return this._toTaskOfSetProgressDto({
+        task,
+        competed: taskProgress?.completed ?? false,
+      });
     });
 
     return (await Promise.all(getTasksWithProgressPromises)).sort(

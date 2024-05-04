@@ -27,7 +27,7 @@ export class InputFlowDndService {
 
   async getInputFlowDndByPkWithUserInputOrdered(params: {
     inputFlowDndId: InputFlowDnd['id'];
-    userId: User['id'];
+    userId: User['id'] | null;
   }): Promise<InputFlowDndDto | null> {
     const inputFlowDnd = await this._inputFlowDndModel.findByPk(
       params.inputFlowDndId,
@@ -37,13 +37,6 @@ export class InputFlowDndService {
       return null;
     }
 
-    const inputFlowDndInput = await this._inputFlowDndInputModel.findOne({
-      where: {
-        userId: params.userId,
-        inputFlowId: inputFlowDnd.id,
-      },
-    });
-
     const commonInputFlowDndData: Omit<InputFlowDndDto, 'options'> = {
       id: inputFlowDnd.id,
       contentType: ContentFlowBlockType.input,
@@ -51,12 +44,30 @@ export class InputFlowDndService {
       order: inputFlowDnd.order,
     };
 
-    if (!inputFlowDndInput) {
-      const options = (
-        await this._inputFlowDndOptionService.getAllInputFlowDndOptions({
+    if (!params.userId) {
+      const options =
+        await this._inputFlowDndOptionService.getAllInputFlowDndOptionsOrdered({
           inputFlowDndId: params.inputFlowDndId,
-        })
-      ).sort((option1, option2) => option1.order - option2.order);
+        });
+
+      return {
+        ...commonInputFlowDndData,
+        options,
+      };
+    }
+
+    const inputFlowDndInput = await this._inputFlowDndInputModel.findOne({
+      where: {
+        userId: params.userId,
+        inputFlowId: inputFlowDnd.id,
+      },
+    });
+
+    if (!inputFlowDndInput) {
+      const options =
+        await this._inputFlowDndOptionService.getAllInputFlowDndOptionsOrdered({
+          inputFlowDndId: params.inputFlowDndId,
+        });
 
       return {
         ...commonInputFlowDndData,
@@ -81,7 +92,7 @@ export class InputFlowDndService {
   }
 
   async getAllInputFlowDndWithUserInput(params: {
-    userId: User['id'];
+    userId: User['id'] | null;
     taskId: Task['id'];
   }): Promise<InputFlowDndDto[]> {
     const inputFlowDnds = await this._inputFlowDndModel.findAll({

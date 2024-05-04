@@ -47,6 +47,15 @@ export class TasksSetsController {
     }));
   }
 
+  @Get('/progress/trial')
+  async getTrialTasksSetProgressAndTaskContent(
+    @Query('task-id', new ParseIntPipe({ optional: true })) taskId?: Task['id'],
+  ): Promise<TasksSetProgressAndTaskDetailsDto | null> {
+    return this._tasksSetsService.getTrialTasksSetProgressAndTaskContent({
+      taskIdToOpen: taskId,
+    });
+  }
+
   @Get('progress/:id')
   @UseGuards(JwtAuthGuard)
   async getTasksSetProgressAndTaskContent(

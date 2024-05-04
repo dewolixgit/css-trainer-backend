@@ -21,9 +21,23 @@ export class PartCodeOnlyRowService {
     private readonly _partCodeOnlyRowInputModel: typeof PartCodeOnlyRowInput,
   ) {}
 
+  private _toPartCodeOnlyRowDto(params: {
+    partCodeOnlyRow: PartCodeOnlyRow;
+    value?: string;
+  }): PartCodeOnlyRowDto {
+    return {
+      id: params.partCodeOnlyRow.id,
+      tabs: params.partCodeOnlyRow.tabs,
+      type: PartCodeRowType.code,
+      order: params.partCodeOnlyRow.order,
+      linesCount: params.partCodeOnlyRow.linesHeight,
+      value: params.value ?? '',
+    };
+  }
+
   async getAllPartCodeOnlyRowsWithUserInput(params: {
     inputFlowPartCodeId: InputFlowPartCode['id'];
-    userId: User['id'];
+    userId: User['id'] | null;
   }): Promise<PartCodeOnlyRowDto[]> {
     const partCodeOnlyRows = await this._partCodeOnlyRowModel.findAll({
       where: { inputFlowId: params.inputFlowPartCodeId },
@@ -33,11 +47,19 @@ export class PartCodeOnlyRowService {
       return [];
     }
 
+    const userId = params.userId;
+
+    if (!userId) {
+      return partCodeOnlyRows.map((partCodeOnlyRow) =>
+        this._toPartCodeOnlyRowDto({ partCodeOnlyRow }),
+      );
+    }
+
     const getPartCodeOnlyRowInputPromises = partCodeOnlyRows.map(
       async (partCodeOnlyRow): Promise<PartCodeOnlyRowInput | null> =>
         this._partCodeOnlyRowInputModel.findOne({
           where: {
-            userId: params.userId,
+            userId,
             rowId: partCodeOnlyRow.id,
           },
         }),
@@ -47,20 +69,15 @@ export class PartCodeOnlyRowService {
       getPartCodeOnlyRowInputPromises,
     );
 
-    const inputFlowOnlyCodeWithUserInput =
-      partCodeOnlyRows.map<PartCodeOnlyRowDto>((partCodeOnlyRow) => ({
-        id: partCodeOnlyRow.id,
-        tabs: partCodeOnlyRow.tabs,
-        type: PartCodeRowType.code,
-        order: partCodeOnlyRow.order,
-        linesCount: partCodeOnlyRow.linesHeight,
+    return partCodeOnlyRows.map((partCodeOnlyRow) =>
+      this._toPartCodeOnlyRowDto({
+        partCodeOnlyRow,
         value:
           partCodeOnlyRowInputs.find(
             (input) => input && input.rowId === partCodeOnlyRow.id,
           )?.value ?? '',
-      }));
-
-    return inputFlowOnlyCodeWithUserInput;
+      }),
+    );
   }
 
   async getByPrimaryKey(
