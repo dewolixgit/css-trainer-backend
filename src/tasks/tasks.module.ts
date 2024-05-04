@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { InputFlowOnlyCode } from '../inputFlowOnlyCode/inputFlowOnlyCode.model';
@@ -39,7 +39,7 @@ import { AchievementsService } from '../achievements/achievements.service';
       PartCodeMixedRowCodeElement,
       PartCodeMixedRowCodeElementInput,
     ]),
-    AchievementsModule,
+    forwardRef(() => AchievementsModule),
     InfoFlowImageBlockModule,
     InfoFlowTextBlockModule,
     InfoFlowCodeBlockModule,

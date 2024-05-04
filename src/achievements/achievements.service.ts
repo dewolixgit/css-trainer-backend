@@ -14,14 +14,47 @@ import { AchievementStatusDto } from './dto/AchievementStatus.dto';
 @Injectable()
 export class AchievementsService {
   constructor(
+    @Inject(forwardRef(() => UsersService))
     private readonly _usersService: UsersService,
-    @Inject(forwardRef(() => TasksSetsService))
     private readonly _tasksSetService: TasksSetsService,
     @InjectModel(Achievement)
     private readonly _achievementModel: typeof Achievement,
     @InjectModel(UserAchievement)
     private readonly _userAchievementModel: typeof UserAchievement,
   ) {}
+
+  async getAchievementsStatus(params: {
+    userId: User['id'];
+  }): Promise<AchievementStatusDto[]> {
+    const [allAchievements, userAchievements] = await Promise.all([
+      this._achievementModel.findAll(),
+      this._userAchievementModel.findAll({
+        where: {
+          userId: params.userId,
+        },
+      }),
+    ]);
+
+    return allAchievements.map((item) => ({
+      data: {
+        id: item.id,
+        name: item.name,
+        description: item.description,
+      },
+      order: item.order,
+      completed: !!userAchievements.find(
+        (userAchievement) => userAchievement.achievementId === item.id,
+      ),
+    }));
+  }
+
+  async getAchievementsStatusOrdered(params: {
+    userId: User['id'];
+  }): Promise<AchievementStatusDto[]> {
+    return (await this.getAchievementsStatus(params)).sort(
+      (item1, item2) => item1.order - item2.order,
+    );
+  }
 
   async checkAchievements(params: {
     userId: User['id'];
@@ -152,6 +185,7 @@ export class AchievementsService {
           name: achievement.name,
           description: achievement.description,
         },
+        order: achievement.order,
         completed: true,
       }),
     );

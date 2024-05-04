@@ -25,6 +25,15 @@ export enum TaskSkill {
   other = 'other',
 }
 
+export const ALL_SKILLS = [
+  TaskSkill.text,
+  TaskSkill.background,
+  TaskSkill.flex,
+  TaskSkill.position,
+  TaskSkill.grid,
+  TaskSkill.other,
+];
+
 export enum TaskSection {
   theory = 'theory',
   practice = 'practice',

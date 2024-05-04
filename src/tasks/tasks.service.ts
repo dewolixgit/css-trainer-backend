@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { Task } from './tasks.model';
+import { ALL_SKILLS, Task, TaskSkill } from './tasks.model';
 import {
   ContentFlowBlocksDtoUnion,
   InfoFlowBlocksDtoUnion,
@@ -35,6 +35,7 @@ import { AchievementsService } from '../achievements/achievements.service';
 @Injectable()
 export class TasksService {
   constructor(
+    @Inject(forwardRef(() => AchievementsService))
     private readonly _achievementService: AchievementsService,
     private readonly _infoFlowTextBlockService: InfoFlowTextBlockService,
     private readonly _infoFlowImageBlockService: InfoFlowImageBlockService,
@@ -51,6 +52,54 @@ export class TasksService {
 
   async getByPk(id: Task['id']): Promise<Task | null> {
     return await this._taskModel.findByPk(id);
+  }
+
+  async getAllCount(): Promise<number> {
+    return this._taskModel.count();
+  }
+
+  async getAllCompletedStatusesCount(params: {
+    userId: number;
+  }): Promise<number> {
+    return this._taskStatusModel.count({
+      where: {
+        completed: true,
+        userId: params.userId,
+      },
+    });
+  }
+
+  async getAllCompletedTaskStatuses(params: {
+    userId: User['id'];
+  }): Promise<TaskStatus[]> {
+    return this._taskStatusModel.findAll({
+      where: {
+        userId: params.userId,
+        completed: true,
+      },
+    });
+  }
+
+  async getAllBySkill(params: { skill: TaskSkill }): Promise<Task[]> {
+    return await this._taskModel.findAll({
+      where: {
+        skill: params.skill,
+      },
+    });
+  }
+
+  async getAllGroupedBySkill(): Promise<Record<TaskSkill, Task[]>> {
+    return (
+      await Promise.all(
+        ALL_SKILLS.map((skill) => this.getAllBySkill({ skill })),
+      )
+    ).reduce<Record<TaskSkill, Task[]>>(
+      (acc, tasksOfSkill, index) => ({
+        ...acc,
+        [ALL_SKILLS[index]]: tasksOfSkill,
+      }),
+      {} as Record<TaskSkill, Task[]>,
+    );
   }
 
   private async _getAllInfoFlowBlocks(params: {
