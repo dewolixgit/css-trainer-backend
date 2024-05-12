@@ -7,4 +7,5 @@ export const VALIDATION_ERRORS_MESSAGES_RU = {
   wrongAuthentication: 'Неверный адрес электронной почты или пароль',
   userAlreadyExists:
     'Пользователь с\xa0таким адресом электронной почты уже существует',
+  authorizationError: 'Ошибка авторизации',
 };

@@ -1,6 +1,8 @@
 import {
   Controller,
   Get,
+  Inject,
+  NotFoundException,
   Param,
   ParseIntPipe,
   Query,
@@ -18,10 +20,15 @@ import { Topic } from '../topics/topics.model';
 import { TasksSet } from './tasksSets.model';
 import { TasksSetProgressAndTaskDetailsDto } from './dto/TasksSetProgressAndTaskDetails.dto';
 import { Task } from '../tasks/tasks.model';
+import { TopicsService } from '../topics/topics.service';
 
 @Controller('tasks-sets')
 export class TasksSetsController {
-  constructor(private readonly _tasksSetsService: TasksSetsService) {}
+  constructor(
+    private readonly _tasksSetsService: TasksSetsService,
+    @Inject(TopicsService)
+    private readonly _topicsService: TopicsService,
+  ) {}
 
   // Todo: Validate a topicId query parameter before validating the user
   @Get('all')
@@ -29,22 +36,34 @@ export class TasksSetsController {
   async getAllWithProgress(
     @Req() request: AuthenticatedRequest,
     @Query('topic-id', ParseIntPipe) topicId: Topic['id'],
-  ): Promise<ToClientTopicDto[]> {
-    return (
-      await this._tasksSetsService.getAllWithProgress({
+  ): Promise<{ tasksSets: ToClientTopicDto[]; parentTopicName: string }> {
+    const [parentTopic, tasksSets] = await Promise.all([
+      this._topicsService.getByPk({
+        id: topicId,
+      }),
+      this._tasksSetsService.getAllWithProgress({
         userId: request.user.userId,
         topicId,
-      })
-    ).map((tasksSet) => ({
-      id: tasksSet.id,
-      name: tasksSet.name,
-      description: tasksSet.description,
-      backgroundImage: tasksSet.backgroundImage,
-      order: tasksSet.order,
-      parentTopicId: tasksSet.parentTopicId,
-      completed: tasksSet.completed,
-      type: ToClientTopicDtoTypeEnum.tasksSet,
-    }));
+      }),
+    ]);
+
+    if (!parentTopic) {
+      throw new NotFoundException();
+    }
+
+    return {
+      tasksSets: tasksSets.map((tasksSet) => ({
+        id: tasksSet.id,
+        name: tasksSet.name,
+        description: tasksSet.description,
+        backgroundImage: tasksSet.backgroundImage,
+        order: tasksSet.order,
+        parentTopicId: tasksSet.parentTopicId,
+        completed: tasksSet.completed,
+        type: ToClientTopicDtoTypeEnum.tasksSet,
+      })),
+      parentTopicName: parentTopic.name,
+    };
   }
 
   @Get('/progress/trial')
