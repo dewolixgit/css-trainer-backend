@@ -27,6 +27,8 @@ import { PartCodeMixedRowCodeElementModule } from '../partCodeMixedRowCodeElemen
 import { PartCodeMixedRowCodeElementService } from '../partCodeMixedRowCodeElement/partCodeMixedRowCodeElement.service';
 import { AchievementsModule } from '../achievements/achievements.module';
 import { AchievementsService } from '../achievements/achievements.service';
+import { InfoFlowListBlockModule } from '../infoFlowListBlock/infoFlowListBlock.module';
+import { InfoFlowListBlockService } from '../infoFlowListBlock/infoFlowListBlock.service';
 
 @Module({
   imports: [
@@ -42,6 +44,7 @@ import { AchievementsService } from '../achievements/achievements.service';
     forwardRef(() => AchievementsModule),
     InfoFlowImageBlockModule,
     InfoFlowTextBlockModule,
+    InfoFlowListBlockModule,
     InfoFlowCodeBlockModule,
     InputFlowOnlyCodeModule,
     InputFlowPartCodeModule,
@@ -55,6 +58,7 @@ import { AchievementsService } from '../achievements/achievements.service';
     TasksService,
     InfoFlowImageBlockService,
     InfoFlowTextBlockService,
+    InfoFlowListBlockService,
     InfoFlowCodeBlockService,
     InputFlowOnlyCodeService,
     InputFlowPartCodeService,
@@ -68,6 +72,7 @@ import { AchievementsService } from '../achievements/achievements.service';
     SequelizeModule,
     InfoFlowImageBlockService,
     InfoFlowTextBlockService,
+    InfoFlowListBlockService,
     InfoFlowCodeBlockService,
     InputFlowOnlyCodeService,
     InputFlowPartCodeService,

@@ -31,6 +31,7 @@ import { HttpStatus } from '@nestjs/common/enums';
 import { PartCodeMixedRowCodeElementService } from '../partCodeMixedRowCodeElement/partCodeMixedRowCodeElement.service';
 import { PartCodeOnlyRowService } from '../partCodeOnlyRow/partCodeOnlyRow.service';
 import { AchievementsService } from '../achievements/achievements.service';
+import { InfoFlowListBlockService } from '../infoFlowListBlock/infoFlowListBlock.service';
 
 @Injectable()
 export class TasksService {
@@ -38,6 +39,7 @@ export class TasksService {
     @Inject(forwardRef(() => AchievementsService))
     private readonly _achievementService: AchievementsService,
     private readonly _infoFlowTextBlockService: InfoFlowTextBlockService,
+    private readonly _infoFlowListBlockService: InfoFlowListBlockService,
     private readonly _infoFlowImageBlockService: InfoFlowImageBlockService,
     private readonly _infoFlowCodeBlockService: InfoFlowCodeBlockService,
     private readonly _inputFlowOnlyCodeService: InputFlowOnlyCodeService,
@@ -124,6 +126,10 @@ export class TasksService {
   }): Promise<InfoFlowBlocksDtoUnion[]> {
     const promises = [
       await this._infoFlowTextBlockService.getAllInfoFlowTextBlocks({
+        taskId: params.taskId,
+        section: params.section,
+      }),
+      await this._infoFlowListBlockService.getAllInfoFlowListBlocksOrderedDto({
         taskId: params.taskId,
         section: params.section,
       }),

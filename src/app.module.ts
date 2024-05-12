@@ -32,6 +32,8 @@ import { TasksSet } from './tasksSets/tasksSets.model';
 import { Task } from './tasks/tasks.model';
 import { TaskStatus } from './taskStatus/taskStatus.model';
 import { TasksSetsModule } from './tasksSets/tasksSets.module';
+import { InfoFlowListBlock } from './infoFlowListBlock/infoFlowListBlock.model';
+import { InfoFlowListItem } from './infoFlowListItem/infoFlowListItem.model';
 
 @Module({
   imports: [
@@ -67,6 +69,8 @@ import { TasksSetsModule } from './tasksSets/tasksSets.module';
         InfoFlowTextBlock,
         InfoFlowImageBlock,
         InfoFlowCodeBlock,
+        InfoFlowListBlock,
+        InfoFlowListItem,
 
         // Input content flow block, drag and drop
         InputFlowDnd,
