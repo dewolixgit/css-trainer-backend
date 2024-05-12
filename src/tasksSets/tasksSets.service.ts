@@ -1,5 +1,5 @@
 import { HttpStatus } from '@nestjs/common/enums';
-import { forwardRef, Inject, Injectable, HttpException } from '@nestjs/common';
+import { Inject, Injectable, HttpException } from '@nestjs/common';
 import { TasksSet } from './tasksSets.model';
 import { InjectModel } from '@nestjs/sequelize';
 import { User } from '../users/users.model';
@@ -16,7 +16,7 @@ import { TRIAL_TASKS_SET_ID } from './config';
 @Injectable()
 export class TasksSetsService {
   constructor(
-    @Inject(forwardRef(() => TasksService))
+    @Inject(TasksService)
     private readonly _tasksService: TasksService,
     @InjectModel(TasksSet) private readonly _tasksSetsModel: typeof TasksSet,
     @InjectModel(TaskStatus)
@@ -29,7 +29,8 @@ export class TasksSetsService {
   }): Promise<TasksSetWithProgressDto[]> {
     const sets = await this._tasksSetsModel.findAll({
       include: [Task],
-      where: params.topicId ? { topicId: params.topicId } : undefined,
+      where:
+        params.topicId !== undefined ? { topicId: params.topicId } : undefined,
     });
 
     if (!sets.length) {

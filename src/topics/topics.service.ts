@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import {
   ToClientTopicDto,
   ToClientTopicDtoTypeEnum,
@@ -12,8 +12,17 @@ import { Topic } from './topics.model';
 export class TopicsService {
   constructor(
     @InjectModel(Topic) private readonly _topicsModel: typeof Topic,
+    @Inject(TasksSetsService)
     private readonly _tasksSetsService: TasksSetsService,
   ) {}
+
+  async getByPk(params: { id: Topic['id'] }): Promise<Topic | null> {
+    return this._topicsModel.findOne({
+      where: {
+        id: params.id,
+      },
+    });
+  }
 
   async getAllTopicsAndTasksSetsWithoutTopic(params: {
     userId: User['id'];
