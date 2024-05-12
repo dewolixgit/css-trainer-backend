@@ -15,6 +15,7 @@ import { InputFlowOnlyCode } from '../inputFlowOnlyCode/inputFlowOnlyCode.model'
 import { InputFlowPartCode } from '../inputFlowPartCode/inputFlowPartCode.model';
 import { InputFlowDnd } from '../inputFlowDnd/inputFlowDnd.model';
 import { ToPartial } from '../types/utils';
+import { InfoFlowListBlock } from '../infoFlowListBlock/infoFlowListBlock.model';
 
 export enum TaskSkill {
   text = 'text',
@@ -76,6 +77,9 @@ export class Task extends Model<TaskAttributes, TaskCreationAttributes> {
 
   @HasMany(() => InfoFlowTextBlock)
   readonly infoFlowTextBlocks: InfoFlowTextBlock[];
+
+  @HasMany(() => InfoFlowListBlock)
+  readonly infoFlowListBlocks: InfoFlowListBlock[];
 
   @HasMany(() => InputFlowOnlyCode)
   readonly inputFlowOnlyCodeBlocks: InputFlowOnlyCode[];

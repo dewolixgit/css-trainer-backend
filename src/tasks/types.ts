@@ -4,9 +4,11 @@ import { InfoFlowTextBlockDto } from './dto/InfoFlowTextBlock.dto';
 import { InputFlowDndDto } from './dto/InputFlowDnd.dto';
 import { InputFlowOnlyCodeDto } from './dto/InputFlowOnlyCode.dto';
 import { InputFlowPartCodeDto } from './dto/InputFlowPartCode.dto';
+import { InfoFlowListBlockDto } from './dto/InfoFlowListBlock.dto';
 
 export type InfoFlowBlocksDtoUnion =
   | InfoFlowTextBlockDto
+  | InfoFlowListBlockDto
   | InfoFlowImageBlockDto
   | InfoFlowCodeBlockDto;
 
