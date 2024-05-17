@@ -27,7 +27,7 @@ export class InfoFlowCodeBlock extends Model<
   @Column({ primaryKey: true, autoIncrement: true })
   readonly id: number;
 
-  @Column({ type: DataTypes.TEXT })
+  @Column({ type: DataTypes.STRING(2047) })
   readonly text: string;
 
   @Column({ defaultValue: 0 })

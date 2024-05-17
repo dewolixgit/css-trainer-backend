@@ -119,14 +119,14 @@ export class UsersService {
     const proportion = allCompletedTasksCount / allTasksCount;
 
     if (proportion < 0.33) {
-      return 'https://placehold.co/400x600/lightgreen/black';
+      return '/api-static/main-character/level-1.png';
     }
 
     if (proportion < 0.66) {
-      return 'https://placehold.co/400x600/lightblue/black';
+      return '/api-static/main-character/level-2.png';
     }
 
-    return 'https://placehold.co/400x600/pink/black';
+    return '/api-static/main-character/level-3.png';
   }
 
   async getAchievementsStatistics(params: {

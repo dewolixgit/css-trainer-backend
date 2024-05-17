@@ -7,6 +7,7 @@ import {
 } from 'sequelize-typescript';
 import { InfoFlowListBlock } from '../infoFlowListBlock/infoFlowListBlock.model';
 import { ToPartial } from '../types/utils';
+import { DataTypes } from 'sequelize';
 
 export type InfoFlowListItemAttributes = Pick<
   InfoFlowListItem,
@@ -27,7 +28,7 @@ export class InfoFlowListItem extends Model<
   @Column({ primaryKey: true, autoIncrement: true })
   readonly id: number;
 
-  @Column
+  @Column({ type: DataTypes.STRING(1023) })
   readonly text: string;
 
   @Column({ defaultValue: 0 })

@@ -30,7 +30,7 @@ export class InfoFlowListBlock extends Model<
   @Column({ primaryKey: true, autoIncrement: true })
   readonly id: number;
 
-  @Column
+  @Column({ type: DataTypes.STRING(2047) })
   readonly title: string;
 
   @Column({ defaultValue: 0 })
