@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { Achievement } from './achievements/achievements.model';
 import { UsersModule } from './users/users.module';
@@ -95,13 +93,11 @@ import { EnvironmentVariablesKeys } from './config/environment';
       autoLoadModels: true,
       synchronize: true,
     }),
-    SequelizeModule.forFeature([Achievement]),
     UsersModule,
     AuthModule,
     TopicsModule,
     TasksSetsModule,
   ],
-  controllers: [AppController],
-  providers: [AppService, AuthService, JwtService],
+  providers: [AuthService, JwtService],
 })
 export class AppModule {}
