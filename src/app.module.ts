@@ -34,6 +34,7 @@ import { TaskStatus } from './taskStatus/taskStatus.model';
 import { TasksSetsModule } from './tasksSets/tasksSets.module';
 import { InfoFlowListBlock } from './infoFlowListBlock/infoFlowListBlock.model';
 import { InfoFlowListItem } from './infoFlowListItem/infoFlowListItem.model';
+import { EnvironmentVariablesKeys } from './config/environment';
 
 @Module({
   imports: [
@@ -42,11 +43,11 @@ import { InfoFlowListItem } from './infoFlowListItem/infoFlowListItem.model';
     }),
     SequelizeModule.forRoot({
       dialect: 'postgres',
-      host: process.env.DATABASE_HOST,
-      port: Number(process.env.DATABASE_PORT),
-      username: process.env.DATABASE_USER,
-      password: process.env.DATABASE_PASSWORD,
-      database: process.env.DATABASE_NAME,
+      host: process.env[EnvironmentVariablesKeys.databaseHost],
+      port: Number(process.env[EnvironmentVariablesKeys.databasePort]),
+      username: process.env[EnvironmentVariablesKeys.databaseUser],
+      password: process.env[EnvironmentVariablesKeys.databasePassword],
+      database: process.env[EnvironmentVariablesKeys.databaseName],
       models: [
         // User
         User,
