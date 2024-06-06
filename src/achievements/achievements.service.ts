@@ -127,6 +127,40 @@ export class AchievementsService {
     }
 
     if (
+      completedTasksSets.length >= 4 &&
+      !userAchievements.find(
+        (achievement) =>
+          achievement.achievementId ===
+          ACHIEVEMENT_REQUIREMENT_TO_ID[
+            AchievementRequirement.fourTasksSetCompleted
+          ],
+      )
+    ) {
+      achievementIdsToSave.push(
+        ACHIEVEMENT_REQUIREMENT_TO_ID[
+          AchievementRequirement.fourTasksSetCompleted
+        ],
+      );
+    }
+
+    if (
+      completedTasksSets.length >= 5 &&
+      !userAchievements.find(
+        (achievement) =>
+          achievement.achievementId ===
+          ACHIEVEMENT_REQUIREMENT_TO_ID[
+            AchievementRequirement.fiveTasksSetCompleted
+          ],
+      )
+    ) {
+      achievementIdsToSave.push(
+        ACHIEVEMENT_REQUIREMENT_TO_ID[
+          AchievementRequirement.fiveTasksSetCompleted
+        ],
+      );
+    }
+
+    if (
       !userAchievements.find(
         (achievement) =>
           achievement.achievementId ===
