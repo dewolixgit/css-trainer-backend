@@ -12,6 +12,8 @@ async function bootstrap() {
     prefix: '/api-static',
   });
 
+  app.setGlobalPrefix('api');
+
   const configService = app.get(ConfigService);
 
   await app.listen(Number(configService.get(EnvironmentVariablesKeys.port)));

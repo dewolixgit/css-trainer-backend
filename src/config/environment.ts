@@ -1,4 +1,5 @@
 export enum EnvironmentVariablesKeys {
+  environment = 'NODE_ENV',
   databaseName = 'DATABASE_NAME',
   databaseUser = 'DATABASE_USER',
   databasePassword = 'DATABASE_PASSWORD',
