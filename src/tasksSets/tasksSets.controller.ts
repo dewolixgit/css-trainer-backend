@@ -30,7 +30,6 @@ export class TasksSetsController {
     private readonly _topicsService: TopicsService,
   ) {}
 
-  // Todo: Validate a topicId query parameter before validating the user
   @Get('all')
   @UseGuards(JwtAuthGuard)
   async getAllWithProgress(
@@ -52,16 +51,18 @@ export class TasksSetsController {
     }
 
     return {
-      tasksSets: tasksSets.map((tasksSet) => ({
-        id: tasksSet.id,
-        name: tasksSet.name,
-        description: tasksSet.description,
-        backgroundImage: tasksSet.backgroundImage,
-        order: tasksSet.order,
-        parentTopicId: tasksSet.parentTopicId,
-        completed: tasksSet.completed,
-        type: ToClientTopicDtoTypeEnum.tasksSet,
-      })),
+      tasksSets: tasksSets
+        .map((tasksSet) => ({
+          id: tasksSet.id,
+          name: tasksSet.name,
+          description: tasksSet.description,
+          backgroundImage: tasksSet.backgroundImage,
+          order: tasksSet.order,
+          parentTopicId: tasksSet.parentTopicId,
+          completed: tasksSet.completed,
+          type: ToClientTopicDtoTypeEnum.tasksSet,
+        }))
+        .sort((a, b) => a.order - b.order),
       parentTopicName: parentTopic.name,
     };
   }

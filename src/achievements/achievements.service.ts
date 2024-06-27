@@ -161,6 +161,23 @@ export class AchievementsService {
     }
 
     if (
+      completedTasksSets.length >= 6 &&
+      !userAchievements.find(
+        (achievement) =>
+          achievement.achievementId ===
+          ACHIEVEMENT_REQUIREMENT_TO_ID[
+            AchievementRequirement.sixTasksSetCompleted
+          ],
+      )
+    ) {
+      achievementIdsToSave.push(
+        ACHIEVEMENT_REQUIREMENT_TO_ID[
+          AchievementRequirement.sixTasksSetCompleted
+        ],
+      );
+    }
+
+    if (
       !userAchievements.find(
         (achievement) =>
           achievement.achievementId ===

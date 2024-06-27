@@ -7,6 +7,7 @@ export enum AchievementRequirement {
   threeTasksSetCompleted = 'threeTasksSetCompleted',
   fourTasksSetCompleted = 'fourTasksSetCompleted',
   fiveTasksSetCompleted = 'fiveTasksSetCompleted',
+  sixTasksSetCompleted = 'sixTasksSetCompleted',
 }
 
 /**
@@ -22,4 +23,5 @@ export const ACHIEVEMENT_REQUIREMENT_TO_ID: Record<
   [AchievementRequirement.threeTasksSetCompleted]: 4,
   [AchievementRequirement.fourTasksSetCompleted]: 5,
   [AchievementRequirement.fiveTasksSetCompleted]: 6,
+  [AchievementRequirement.sixTasksSetCompleted]: 7,
 };
